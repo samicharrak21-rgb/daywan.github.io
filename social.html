@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ديوان الإدارة • اللوحة الكلاسيكية</title>
+  
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%238b5a2b' d='M256 32c-14.2 0-27.3 7.5-34.5 19.8l-216 368c-7.3 12.4-7.3 27.7-.2 40.1S21.6 480 36 480h440c14.4 0 27.6-7.6 34.8-19.9s7.1-27.8-.1-40.1l-216-368C283.3 39.5 270.2 32 256 32z'/%3E%3C/svg%3E">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-body: #fbf9f4; 
+      --bg-card: #ffffff; 
+      --text-main: #2b1f17; 
+      --text-muted: #6e5f52;
+      --accent: #8b5a2b;
+      --accent-hover: #6b431c;
+      --border: #e8e2d5;
+      --border-double: 3px double #e8e2d5;
+      --shadow: 0 4px 20px rgba(139, 90, 43, 0.04);
+      --pattern-opacity: 0.05; 
+      --pattern-invert: 0;
+    }
+
+    [data-theme="dark"] {
+      --bg-body: #1a1614;
+      --bg-card: #241e1b;
+      --text-main: #e8dcc7;
+      --text-muted: #a39481;
+      --accent: #cfa870;
+      --accent-hover: #b89155;
+      --border: #3d342d;
+      --border-double: 3px double #4a3f35;
+      --shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      --pattern-opacity: 0.03;
+      --pattern-invert: 1;
+    }
+
+    [data-theme="royal"] {
+      --bg-body: #070e17;
+      --bg-card: #0f1724;
+      --text-main: #f0f4f8;
+      --text-muted: #8496ad;
+      --accent: #d4af37; 
+      --accent-hover: #b5952f;
+      --border: #1e293b;
+      --border-double: 3px double #2c3e50;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+      --pattern-opacity: 0.05;
+      --pattern-invert: 1;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      font-family: 'Tajawal', sans-serif;
+      transition: background-color 0.5s ease, color 0.5s ease;
+      position: relative;
+      z-index: 0;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      opacity: var(--pattern-opacity);
+      filter: invert(var(--pattern-invert));
+      transition: opacity 0.5s ease, filter 0.5s ease;
+    }
+
+    h1, h2, h3, h4, .font-amiri { font-family: 'Amiri', serif; }
+
+    .classic-card { background-color: var(--bg-card); border: var(--border-double); box-shadow: var(--shadow); transition: all 0.3s ease; }
+    .classic-input { background-color: var(--bg-body); border: 1px solid var(--border); color: var(--text-main); transition: all 0.3s; }
+    .classic-input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 2px var(--accent)20; }
+    .classic-btn { background-color: var(--accent); color: var(--bg-card); border: none; transition: all 0.3s ease; cursor: pointer; }
+    .classic-btn:hover { background-color: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .classic-btn-outline { background-color: transparent; color: var(--accent); border: 1px solid var(--accent); transition: all 0.3s ease; cursor: pointer; }
+    .classic-btn-outline:hover { background-color: var(--accent); color: var(--bg-card); }
+
+    .section { display: none; animation: fadeIn 0.4s ease-in-out forwards; }
+    .section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    .nav-btn { color: var(--text-muted); border-right: 3px solid transparent; transition: all 0.2s; font-size: 0.95rem; text-align: right; }
+    .nav-btn:hover { color: var(--accent); background-color: var(--bg-body); }
+    .nav-btn.active { color: var(--accent); border-right-color: var(--accent); background-color: var(--bg-card); font-weight: 700; }
+
+    .title-ornament::before, .title-ornament::after { content: '۞'; color: var(--accent); margin: 0 10px; font-size: 0.8em; opacity: 0.8; }
+    .delete-btn { opacity: 0; transition: all 0.3s; color: #dc2626; cursor: pointer; }
+    .group:hover .delete-btn { opacity: 1; }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-body); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    .quran-text { font-family: 'Amiri', serif; font-size: 1.8rem; line-height: 2.5; text-align: justify; direction: rtl; }
+    .ayah-number { display: inline-block; width: 30px; height: 30px; line-height: 30px; text-align: center; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="none" stroke="%238b5a2b" stroke-width="5"/><circle cx="50" cy="50" r="35" fill="none" stroke="%238b5a2b" stroke-width="2" stroke-dasharray="5,5"/></svg>') no-repeat center center; background-size: contain; font-size: 0.9rem; margin: 0 8px; color: var(--accent); }
+    
+    .audio-player-card { background: var(--bg-body); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
+    .focus-btn.playing { background-color: var(--accent); color: var(--bg-card); transform: scale(1.05); border-color: var(--accent); box-shadow: 0 0 15px var(--accent)50;}
+    
+    .modal-overlay { background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); }
+
+    .diwan-logo { color: var(--accent); display: inline-block; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.1)); }
+  </style>
+</head>
+<body class="min-h-screen flex">
+
+  <div id="auth-screen" class="fixed inset-0 z-[200] bg-[var(--bg-body)] flex items-center justify-center transition-opacity duration-500">
+    <div class="classic-card p-10 rounded-2xl max-w-md w-full shadow-2xl text-center border-t-4 border-t-[var(--accent)] relative overflow-hidden">
+        <div class="absolute -top-10 -right-10 opacity-10 text-9xl"><i class="fa-solid fa-mosque"></i></div>
+        <div class="mb-4 relative z-10"><i class="fa-solid fa-door-closed text-6xl diwan-logo"></i></div>
+        <h1 class="text-5xl font-bold font-amiri mb-2 relative z-10" style="color: var(--accent)">دِيوَان الأَنْدَلُس</h1>
+        <p class="text-md mb-8 relative z-10" style="color: var(--text-muted)">مَجْلِسُكَ لِلْإِدَارَةِ وَتَهْذِيبِ النَّفْس</p>
+        
+        <div class="space-y-4 relative z-10">
+            <button onclick="performLogin(this)" class="w-full py-3 border rounded-lg flex items-center justify-center gap-3 hover:bg-opacity-90 transition text-[var(--bg-card)] font-bold bg-[var(--accent)] shadow-sm">
+                <i class="fa-solid fa-key text-xl"></i> اُدْخُلْ بِسَلَام
+            </button>
+        </div>
+    </div>
+  </div>
+
+  <div id="custom-dialog" class="hidden fixed inset-0 z-[100] flex items-center justify-center modal-overlay">
+    <div class="classic-card p-6 rounded-lg max-w-md w-full shadow-2xl transform scale-100 transition-transform">
+        <h3 id="dialog-title" class="font-bold text-xl mb-3 font-amiri title-ornament text-[var(--accent)] text-center">تنبيه</h3>
+        <p id="dialog-message" class="mb-4 text-sm leading-relaxed text-center"></p>
+        <div id="dialog-inputs" class="space-y-3 mb-5 hidden"></div>
+        <div class="flex justify-center gap-3 border-t pt-4" style="border-color: var(--border)">
+            <button id="dialog-confirm" class="px-5 py-2 classic-btn rounded font-bold text-sm">موافق</button>
+            <button id="dialog-cancel" class="px-5 py-2 classic-btn-outline rounded font-bold text-sm hidden">إلغاء</button>
+        </div>
+    </div>
+  </div>
+
+  <div id="focus-modal" class="hidden fixed inset-0 z-50 bg-[var(--bg-body)] flex flex-col items-center justify-center bg-opacity-95 backdrop-blur-sm">
+    <div class="text-center w-full max-w-lg classic-card p-10 rounded-2xl relative overflow-hidden">
+      <div class="absolute inset-0 opacity-5 bg-center bg-no-repeat bg-contain" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><path d=\'M50 0 L100 50 L50 100 L0 50 Z\' fill=\'%23000\'/></svg>');"></div>
+      
+      <h2 class="text-4xl font-amiri font-bold mb-2 title-ornament text-[var(--accent)] relative z-10">خَلْوَةُ المُتَأَمِّل</h2>
+      <p class="mb-8 opacity-70 relative z-10">"وَمَا النَّصْرُ إِلَّا صَبْرُ سَاعَة"</p>
+      
+      <div id="focus-timer-display" class="text-7xl font-amiri font-bold mb-8 text-[var(--text-main)] relative z-10 tracking-widest">25:00</div>
+      
+      <div class="flex justify-center gap-4 mb-8 relative z-10">
+        <button onclick="startFocusTimer(25)" class="px-6 py-2 classic-btn-outline rounded font-bold hover:bg-[var(--accent)] hover:text-white transition">25 دقيقة</button>
+        <button onclick="startFocusTimer(50)" class="px-6 py-2 classic-btn-outline rounded font-bold hover:bg-[var(--accent)] hover:text-white transition">50 دقيقة</button>
+      </div>
+
+      <div class="flex justify-center gap-8 mb-8 border-y py-6 relative z-10" style="border-color: var(--border)">
+        <div class="text-center">
+            <button id="btn-water" onclick="toggleSound('water')" class="focus-btn w-16 h-16 rounded-full classic-card border text-2xl mb-2 flex items-center justify-center mx-auto transition-all">
+                <i class="fa-solid fa-water"></i>
+            </button>
+            <span class="text-xs font-bold font-amiri">نافورة الفناء</span>
+            <audio id="audio-water" loop src="https://cdn.freesound.org/previews/398/398661_7586738-lq.mp3"></audio>
+        </div>
+        <div class="text-center">
+            <button id="btn-ney" onclick="toggleSound('ney')" class="focus-btn w-16 h-16 rounded-full classic-card border text-2xl mb-2 flex items-center justify-center mx-auto transition-all">
+                <i class="fa-solid fa-music"></i>
+            </button>
+            <span class="text-xs font-bold font-amiri">عزف الناي</span>
+            <audio id="audio-ney" loop src="https://ia800108.us.archive.org/30/items/NeyTaqsim/ney.mp3"></audio>
+        </div>
+      </div>
+      
+      <button onclick="exitFocusMode()" class="px-8 py-3 bg-red-800 text-white rounded-full font-bold hover:bg-red-700 transition shadow-lg relative z-10">قَطْعُ الخَلْوَة</button>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="w-64 classic-card border-l-0 border-y-0 fixed right-0 top-0 bottom-0 z-40 flex flex-col transform translate-x-full md:translate-x-0 transition-transform duration-300">
+    <div class="p-6 text-center border-b border-[var(--border)] relative">
+      <div class="mb-2"><i class="fa-solid fa-archway text-4xl diwan-logo"></i></div>
+      <h1 class="text-3xl font-bold font-amiri" style="color: var(--accent)">دِيوَان الأَنْدَلُس</h1>
+    </div>
+
+    <nav class="flex-1 overflow-y-auto py-4 space-y-1">
+      <button onclick="switchSection('dashboard')" class="nav-btn active w-full flex items-center gap-3 px-6 py-3"><i class="fa-solid fa-landmark w-5 text-center"></i> <span>فِنَاءُ الدَّار (الرئيسية)</span></button>
+      <button onclick="switchSection('quran')" class="nav-btn w-full flex items-center gap-3 px-6 py-3"><i class="fa-solid fa-book-quran w-5 text-center"></i> <span>المُصْحَف الشَّرِيف</span></button>
+      <button onclick="switchSection('adhkar')" class="nav-btn w-full flex items-center gap-3 px-6 py-3"><i class="fa-solid fa-hands-praying w-5 text-center"></i> <span>حِصْنُ المُسْلِم</span></button>
+      <button onclick="switchSection('audio')" class="nav-btn w-full flex items-center gap-3 px-6 py-3"><i class="fa-solid fa-headphones w-5 text-center"></i> <span>التِّلَاوَاتُ القُرْآنِيَّة</span></button>
+      <button onclick="switchSection('literature')" class="nav-btn w-full flex items-center gap-3 px-6 py-3"><i class="fa-solid fa-feather-pointed w-5 text-center"></i> <span>مَجْلِسُ الأَدَبِ وَالشِّعْر</span></button>
+      <button onclick="switchSection('books')" class="nav-btn w-full flex items-center gap-3 px-6 py-3"><i class="fa-solid fa-scroll w-5 text-center"></i> <span>خِزَانَةُ الكُتُب</span></button>
+      <button onclick="switchSection('tasks')" class="nav-btn w-full flex items-center gap-3 px-6 py-3"><i class="fa-solid fa-list-check w-5 text-center"></i> <span>صَحَائِفُ الأَعْمَال</span></button>
+      <button onclick="switchSection('habits')" class="nav-btn w-full flex items-center gap-3 px-6 py-3"><i class="fa-solid fa-seedling w-5 text-center"></i> <span>الشَّمَائِلُ وَالعَادَات</span></button>
+      <button onclick="switchSection('settings')" class="nav-btn w-full flex items-center gap-3 px-6 py-3"><i class="fa-solid fa-gear w-5 text-center"></i> <span>تَدَابِيرُ الدِّيوَان</span></button>
+    </nav>
+
+    <div class="p-4 border-t border-[var(--border)]">
+      <button onclick="toggleFocusMode()" class="w-full py-3 classic-btn rounded flex items-center justify-center gap-2 font-bold text-sm shadow-md">
+        <i class="fa-solid fa-hourglass-half"></i> اُدْخُلِ الخَلْوَة
+      </button>
+    </div>
+  </aside>
+
+  <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden md:hidden transition-opacity" onclick="closeSidebar()"></div>
+
+  <main class="flex-1 md:mr-64 flex flex-col min-h-screen relative w-full transition-all duration-300">
+    <header class="h-16 px-4 md:px-8 flex items-center justify-between z-20 sticky top-0 bg-[var(--bg-body)]" style="border-bottom: 1px solid var(--border)">
+      <div class="flex items-center gap-3">
+          <button id="mobile-menu-btn" onclick="openSidebar()" class="md:hidden text-2xl text-[var(--text-muted)] hover:text-[var(--accent)] transition">
+              <i class="fa-solid fa-bars-staggered"></i>
+          </button>
+          <div id="top-date" class="font-amiri text-sm md:text-lg font-bold text-[var(--accent)] hidden md:block"></div>
+      </div>
+      
+      <div class="flex items-center gap-4">
+          <div id="top-hijri-date" class="font-amiri font-bold text-sm text-[var(--text-muted)]"></div>
+          <div class="h-6 w-px bg-[var(--border)]"></div>
+          <div class="flex items-center gap-2 cursor-pointer group" onclick="switchSection('settings')">
+              <div class="text-right hidden md:block">
+                  <p id="top-greeting" class="text-xs" style="color: var(--text-muted)">أهلاً بك</p>
+                  <p id="top-name" class="font-bold text-sm transition group-hover:text-[var(--accent)] font-amiri"></p>
+              </div>
+              <div class="w-8 h-8 rounded-full flex items-center justify-center classic-card text-[var(--accent)] text-sm border-none shadow">
+                  <i class="fa-solid fa-user-large"></i>
+              </div>
+          </div>
+      </div>
+    </header>
+
+    <div class="flex-1 p-4 md:p-6 overflow-x-hidden">
+      
+      <div id="dashboard" class="section active max-w-6xl mx-auto">
+        <div class="mb-10 text-center mt-4">
+          <h1 class="text-3xl md:text-5xl font-bold mb-4 title-ornament"><span id="dash-greeting">أهلاً بك</span> يا <span id="dash-name" style="color: var(--accent)"></span></h1>
+          <p id="quote-display" class="font-amiri text-xl md:text-2xl italic leading-relaxed max-w-3xl mx-auto" style="color: var(--text-muted)">"وَقُل رَّبِّ زِدْنِي عِلْمًا"</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div class="classic-card rounded-lg p-5 text-center border-b-4 hover:-translate-y-1 transition-transform cursor-pointer" onclick="switchSection('tasks')" style="border-bottom-color: var(--accent)">
+            <h3 class="font-bold text-xs md:text-sm mb-2 text-[var(--text-muted)]"><i class="fa-solid fa-list-check ml-1"></i> إنجاز المهام</h3>
+            <div class="text-2xl md:text-4xl font-bold font-amiri text-[var(--accent)] mt-2" id="stat-tasks">0</div>
+          </div>
+          <div class="classic-card rounded-lg p-5 text-center border-b-4 hover:-translate-y-1 transition-transform cursor-pointer" onclick="switchSection('books')" style="border-bottom-color: var(--accent)">
+            <h3 class="font-bold text-xs md:text-sm mb-2 text-[var(--text-muted)]"><i class="fa-solid fa-scroll ml-1"></i> الكتب المقروءة</h3>
+            <div class="text-2xl md:text-4xl font-bold font-amiri text-[var(--accent)] mt-2" id="stat-books">0</div>
+          </div>
+          <div class="classic-card rounded-lg p-5 text-center border-b-4 hover:-translate-y-1 transition-transform cursor-pointer" onclick="switchSection('habits')" style="border-bottom-color: var(--accent)">
+            <h3 class="font-bold text-xs md:text-sm mb-2 text-[var(--text-muted)]"><i class="fa-solid fa-seedling ml-1"></i> العادات المتأصلة</h3>
+            <div class="text-2xl md:text-4xl font-bold font-amiri text-[var(--accent)] mt-2" id="stat-habits">0</div>
+          </div>
+          <div class="classic-card rounded-lg p-5 text-center border-b-4" style="border-bottom-color: var(--accent)">
+            <h3 class="font-bold text-xs md:text-sm mb-2 text-[var(--text-muted)]"><i class="fa-solid fa-chart-line ml-1"></i> مستوى الإنجاز</h3>
+            <div class="text-2xl md:text-4xl font-bold font-amiri text-[var(--accent)] mt-2" id="stat-progress-text">0%</div>
+            <div class="w-full bg-[var(--border)] rounded-full h-1.5 mt-3 overflow-hidden">
+                <div id="stat-progress-bar" class="bg-[var(--accent)] h-1.5 rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="classic-card rounded-lg p-6 mb-8 relative shadow-sm border-t-2" style="border-top-color: var(--accent)">
+            <div class="absolute -top-4 right-4 bg-[var(--accent)] text-[var(--bg-card)] px-4 py-1 rounded-md text-sm font-bold shadow-md font-amiri tracking-wide z-10">مَوَاقِيتُ الصَّلَاة <span id="prayer-city" class="font-sans text-[0.65rem] opacity-80">(جاري التحديث...)</span></div>
+            <div class="grid grid-cols-3 md:grid-cols-6 gap-3 text-center mt-3">
+                <div class="bg-[var(--bg-body)] p-3 rounded-lg border border-[var(--border)] shadow-sm">
+                    <p class="text-xs opacity-70 mb-1">الفجر</p>
+                    <p id="pt-fajr" class="font-bold font-amiri text-lg md:text-2xl text-[var(--accent)]">--:--</p>
+                </div>
+                <div class="bg-[var(--bg-body)] p-3 rounded-lg border border-[var(--border)] shadow-sm">
+                    <p class="text-xs opacity-70 mb-1">الشروق</p>
+                    <p id="pt-sunrise" class="font-bold font-amiri text-lg md:text-2xl text-[var(--accent)]">--:--</p>
+                </div>
+                <div class="bg-[var(--bg-body)] p-3 rounded-lg border border-[var(--border)] shadow-sm">
+                    <p class="text-xs opacity-70 mb-1">الظهر</p>
+                    <p id="pt-dhuhr" class="font-bold font-amiri text-lg md:text-2xl text-[var(--accent)]">--:--</p>
+                </div>
+                <div class="bg-[var(--bg-body)] p-3 rounded-lg border border-[var(--border)] shadow-sm">
+                    <p class="text-xs opacity-70 mb-1">العصر</p>
+                    <p id="pt-asr" class="font-bold font-amiri text-lg md:text-2xl text-[var(--accent)]">--:--</p>
+                </div>
+                <div class="bg-[var(--bg-body)] p-3 rounded-lg border border-[var(--border)] shadow-sm">
+                    <p class="text-xs opacity-70 mb-1">المغرب</p>
+                    <p id="pt-maghrib" class="font-bold font-amiri text-lg md:text-2xl text-[var(--accent)]">--:--</p>
+                </div>
+                <div class="bg-[var(--bg-body)] p-3 rounded-lg border border-[var(--border)] shadow-sm">
+                    <p class="text-xs opacity-70 mb-1">العشاء</p>
+                    <p id="pt-isha" class="font-bold font-amiri text-lg md:text-2xl text-[var(--accent)]">--:--</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6">
+          <div class="classic-card rounded-lg p-5 flex flex-col shadow-md">
+            <div class="flex justify-between items-center mb-3 border-b pb-2" style="border-color: var(--border)">
+                <h3 class="text-xl font-bold font-amiri title-ornament text-right">كُنَّاشَةُ الأَفْكَار (المسودة)</h3>
+                <span id="kunnash-status" class="text-xs font-bold text-green-600 opacity-0 transition-opacity duration-300">حُفِظَتْ <i class="fa-solid fa-check-double"></i></span>
+            </div>
+            <textarea id="kunnash-input" oninput="saveKunnash()" class="flex-1 w-full h-40 classic-input rounded p-4 text-lg resize-none font-amiri leading-relaxed bg-transparent border-none" placeholder="خُطَّ هُنَا مَا يَدُورُ فِي خَلَدِك، أَو دَوِّنْ مَهَامَّكَ العَاجِلَة... (الْحِفْظُ تِلْقَائِيّ)"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div id="adhkar" class="section max-w-5xl mx-auto">
+        <h2 class="text-4xl font-bold mb-8 title-ornament text-center">حِصْنُ المُسْلِم</h2>
+        <div class="flex flex-wrap justify-center gap-3 mb-8">
+            <button onclick="renderAdhkar('sabah', this)" class="adhkar-btn px-6 py-2 classic-btn rounded font-bold text-md"><i class="fa-solid fa-sun ml-2"></i> الصَّبَاح</button>
+            <button onclick="renderAdhkar('masaa', this)" class="adhkar-btn px-6 py-2 classic-btn-outline rounded font-bold text-md"><i class="fa-solid fa-moon ml-2"></i> المَسَاء</button>
+            <button onclick="renderAdhkar('salah', this)" class="adhkar-btn px-6 py-2 classic-btn-outline rounded font-bold text-md"><i class="fa-solid fa-pray ml-2"></i> بَعْدَ الصَّلَاة</button>
+            <button onclick="renderAdhkar('nawm', this)" class="adhkar-btn px-6 py-2 classic-btn-outline rounded font-bold text-md"><i class="fa-solid fa-bed ml-2"></i> النَّوْم</button>
+        </div>
+        <div id="adhkar-list" class="space-y-4"></div>
+      </div>
+
+      <div id="quran" class="section max-w-5xl mx-auto">
+        <h2 class="text-4xl font-bold mb-8 title-ornament text-center">المُصْحَفُ الشَّرِيف</h2>
+        <div class="classic-card rounded-lg p-6 mb-6 shadow-md">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6 border-b pb-4" style="border-color: var(--border)">
+                <div class="w-full md:w-1/2 flex gap-2">
+                    <select id="surah-selector" class="classic-input flex-1 px-4 py-2 rounded font-bold text-lg font-amiri" onchange="loadSurah()">
+                        <option value="">اخْتَرْ السُّورَةَ...</option>
+                    </select>
+                </div>
+                <div class="flex gap-2 w-full md:w-auto">
+                    <button onclick="loadSavedWird()" class="flex-1 md:flex-none px-4 py-2 classic-btn-outline rounded font-bold text-sm"><i class="fa-solid fa-rotate-left ml-2"></i>الْعَوْدَة لِلْوِرْد</button>
+                    <button onclick="saveWirdMarker()" class="flex-1 md:flex-none px-4 py-2 classic-btn rounded font-bold text-sm"><i class="fa-solid fa-bookmark ml-2"></i>حِفْظُ المَقَام</button>
+                </div>
+            </div>
+            <div id="quran-reader-container" class="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 md:p-10 min-h-[500px] overflow-y-auto relative" style="box-shadow: inset 0 0 30px rgba(0,0,0,0.03);">
+                <div class="text-center opacity-50 pt-20">
+                    <i class="fa-solid fa-book-open-reader text-6xl mb-4" style="color: var(--accent)"></i>
+                    <p class="font-amiri text-xl">الرَّجَاءُ اخْتِيَارُ سُورَةٍ لِلْقِرَاءَة</p>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <div id="audio" class="section max-w-4xl mx-auto">
+        <h2 class="text-4xl font-bold mb-8 title-ornament text-center">التِّلَاوَاتُ القُرْآنِيَّة</h2>
+        <div class="classic-card rounded-lg p-8 h-auto overflow-y-auto shadow-md">
+            
+            <div class="audio-player-card">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="font-bold text-lg font-amiri">الشَّيْخُ مَحْمُودُ خَلِيل الحُصَرِي</span>
+                    <span class="text-xs px-2 py-1 bg-[var(--bg-body)] rounded border">المُرَتَّل</span>
+                </div>
+                <select id="husary-surah" class="w-full classic-input rounded px-2 py-2 mb-3 text-sm font-bold" onchange="playQuranAudio('husary')"></select>
+                <audio id="audio-husary" controls class="w-full h-10"></audio>
+            </div>
+
+            <div class="audio-player-card">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="font-bold text-lg font-amiri">الشَّيْخُ مُحَمَّد صِدِّيق المِنْشَاوِي</span>
+                    <span class="text-xs px-2 py-1 bg-[var(--bg-body)] rounded border">المُجَوَّد</span>
+                </div>
+                <select id="minshawi-surah" class="w-full classic-input rounded px-2 py-2 mb-3 text-sm font-bold" onchange="playQuranAudio('minshawi')"></select>
+                <audio id="audio-minshawi" controls class="w-full h-10"></audio>
+            </div>
+
+            <div class="audio-player-card">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="font-bold text-lg font-amiri">الشَّيْخُ عَبْدُ البَاسِط عَبْدُ الصَّمَد</span>
+                    <span class="text-xs px-2 py-1 bg-[var(--bg-body)] rounded border">المُجَوَّد</span>
+                </div>
+                <select id="abdulbasit-surah" class="w-full classic-input rounded px-2 py-2 mb-3 text-sm font-bold" onchange="playQuranAudio('abdulbasit')"></select>
+                <audio id="audio-abdulbasit" controls class="w-full h-10"></audio>
+            </div>
+        </div>
+      </div>
+
+      <div id="books" class="section max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+          <h2 class="text-4xl font-bold title-ornament">خِزَانَةُ الكُتُب</h2>
+          <button onclick="addBook()" class="w-full md:w-auto px-6 py-3 classic-btn rounded font-bold text-md shadow-md"><i class="fa-solid fa-plus ml-2"></i> إِيدَاعُ كِتَابٍ جَدِيد</button>
+        </div>
+        <div id="books-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+      </div>
+
+      <div id="literature" class="section max-w-5xl mx-auto">
+        <h2 class="text-4xl font-bold mb-8 title-ornament text-center">مَجْلِسُ الأَدَبِ وَالشِّعْر</h2>
+        <div class="classic-card rounded-lg p-6 mb-8 relative shadow-md">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8 border-b pb-4 gap-4" style="border-color: var(--border)">
+                <h3 class="font-amiri text-3xl font-bold" style="color: var(--accent)">رَوَائِعُ القَصِيدِ وَالْحِكَم</h3>
+                <button onclick="addPoem()" class="w-full md:w-auto px-6 py-3 classic-btn rounded font-bold text-md"><i class="fa-solid fa-pen-nib ml-2"></i> تَدْوِينُ قَصِيدَة</button>
+            </div>
+            <div id="poetry-list" class="space-y-8"></div>
+        </div>
+      </div>
+
+      <div id="tasks" class="section max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+          <h2 class="text-4xl font-bold title-ornament">صَحَائِفُ الأَعْمَال</h2>
+          <button onclick="addNewTask()" class="w-full md:w-auto px-6 py-3 classic-btn rounded font-bold text-md shadow-md"><i class="fa-solid fa-plus ml-2"></i> خُطَّ مُهِمَّةً جَدِيدَة</button>
+        </div>
+        <div id="kanban-board" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+      </div>
+
+      <div id="habits" class="section max-w-4xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+          <h2 class="text-4xl font-bold title-ornament">الشَّمَائِلُ وَالعَادَات</h2>
+          <button onclick="addHabit()" class="w-full md:w-auto px-6 py-3 classic-btn rounded font-bold text-md shadow-md"><i class="fa-solid fa-plus ml-2"></i> غَرْسُ عَادَة</button>
+        </div>
+        <div class="classic-card rounded-lg p-8 shadow-md">
+             <div id="habits-list" class="space-y-4"></div>
+             <p class="text-sm mt-8 text-center font-amiri text-lg" style="color: var(--text-muted)"><i class="fa-solid fa-quote-right ml-2 opacity-50"></i> قَلِيلٌ دَائِم، خَيْرٌ مِنْ كَثِيرٍ مُنْقَطِع <i class="fa-solid fa-quote-left mr-2 opacity-50"></i></p>
+        </div>
+      </div>
+
+      <div id="settings" class="section max-w-4xl mx-auto">
+        <h2 class="text-4xl font-bold mb-8 title-ornament text-center">تَدَابِيرُ الدِّيوَان</h2>
+        
+        <div class="classic-card rounded-lg p-8 mb-6 shadow-md border-t-4" style="border-top-color: var(--accent)">
+          <h3 class="text-2xl font-bold mb-6 font-amiri border-b pb-3" style="border-color: var(--border)"><i class="fa-solid fa-palette ml-2 text-[var(--accent)]"></i> سِمَةُ الدَّار</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <button onclick="setTheme('light')" class="py-4 border-2 rounded-lg font-bold font-amiri text-xl hover:border-[var(--accent)] text-[#2c1e16] bg-[#fbf9f4] transition shadow-sm">الوَضْعُ الأَبْيَض (نَهَار)</button>
+            <button onclick="setTheme('dark')" class="py-4 border-2 rounded-lg font-bold font-amiri text-xl hover:border-[var(--accent)] text-[#e8dcc7] bg-[#1a1614] transition shadow-sm">اللَّيْلُ الأَنْدَلُسِي (لَيْل)</button>
+            <button onclick="setTheme('royal')" class="py-4 border-2 rounded-lg font-bold font-amiri text-xl hover:border-[var(--accent)] text-[#f0f4f8] bg-[#070e17] transition shadow-sm">الأَزْرَقُ المَلَكِي</button>
+          </div>
+        </div>
+
+        <div class="classic-card rounded-lg p-8 mb-6 shadow-md">
+            <h3 class="text-2xl font-bold mb-4 font-amiri border-b pb-3" style="border-color: var(--border)"><i class="fa-solid fa-box-archive ml-2 text-[var(--accent)]"></i> صَوْنُ السِّجِلَّات (النُّسَخ الاحْتِيَاطِيَّة)</h3>
+            <p class="text-md mb-6 leading-relaxed" style="color: var(--text-muted)">لِحِفْظِ مَقَامَاتِكَ وَكُتُبِكَ وَأَشْعَارِك مِنَ الضَّيَاع، قُمْ بِتَحْمِيلِ نُسْخَةٍ مِنَ الدِّيوَانِ بَيْنَ الْحِينِ وَالْآخَر.</p>
+            <div class="flex flex-col md:flex-row gap-4">
+                <button onclick="exportData()" class="flex-1 py-4 classic-btn rounded font-bold text-md"><i class="fa-solid fa-download ml-2"></i> خَتْمُ النُّسْخَة (تَحْمِيل)</button>
+                <label class="flex-1 py-4 classic-btn-outline rounded font-bold text-md text-center cursor-pointer hover:bg-[var(--accent)] hover:text-white transition">
+                    <i class="fa-solid fa-upload ml-2"></i> اسْتِرْدَادُ السِّجِلَّات
+                    <input type="file" id="import-file" class="hidden" accept=".json" onchange="importData(event)">
+                </label>
+            </div>
+        </div>
+
+        <div class="classic-card rounded-lg p-8 mb-6 shadow-md">
+          <h3 class="text-2xl font-bold mb-6 font-amiri border-b pb-3" style="border-color: var(--border)"><i class="fa-solid fa-id-card ml-2 text-[var(--accent)]"></i> هُوِيَّةُ صَاحِبِ الدِّيوَان</h3>
+          <div class="space-y-4">
+            <div>
+              <label class="block mb-2 font-bold text-md font-amiri">الاسْمُ الكَرِيم</label>
+              <input id="setting-name" type="text" class="w-full classic-input rounded-lg px-4 py-3 font-bold text-lg font-amiri">
+            </div>
+            <button onclick="saveSettings()" class="px-6 py-4 classic-btn rounded font-bold w-full text-lg mb-2 mt-4"><i class="fa-solid fa-floppy-disk ml-2"></i> حِفْظُ التَّدَابِير</button>
+            <button onclick="performLogout()" class="px-6 py-3 border-2 border-red-800 text-red-800 hover:bg-red-800 hover:text-white rounded font-bold w-full text-md transition mt-4"><i class="fa-solid fa-arrow-right-from-bracket ml-2"></i> طَيُّ السِّجِلِّ وَالخُرُوج (مَسْح البَيَانَات)</button>
+          </div>
+        </div>
+        
+        <div class="mt-12 text-center opacity-60 hover:opacity-100 transition-opacity duration-300">
+            <p class="text-sm font-amiri mb-2">تَمَّ التَّطْوِيرُ بِوَاسِطَة: <span class="font-bold text-[var(--accent)]">سامي</span></p>
+            <a href="https://x.com/samicharrak21" target="_blank" class="inline-flex items-center gap-2 text-xs text-[var(--text-muted)] hover:text-[var(--accent)] transition">
+                <i class="fa-brands fa-x-twitter text-sm"></i> تَوَاصَلْ مَعِي عَلَى إِكْس
+            </a>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    let appData = {
+      isLoggedIn: false, theme: 'light', userName: '', kunnash: '', quranWird: '1', tasks: [], habits: [], poems: [], books: [], 
+      adhkarProgress: {}, lastAdhkarDate: '', currentSection: 'dashboard', initialized: false
+    };
+
+    const surahs = ["الفاتحة","البقرة","آل عمران","النساء","المائدة","الأنعام","الأعراف","الأنفال","التوبة","يونس","هود","يوسف","الرعد","إبراهيم","الحجر","النحل","الإسراء","الكهف","مريم","طه","الأنبياء","الحج","المؤمنون","النور","الفرقان","الشعراء","النمل","القصص","العنكبوت","الروم","لقمان","السجدة","الأحزاب","سبأ","فاطر","يس","الصافات","ص","الزمر","غافر","فصلت","الشورى","الزخرف","الدخان","الجاثية","الأحقاف","محمد","الفتح","الحجرات","ق","الذاريات","الطور","النجم","القمر","الرحمن","الواقعة","الحديد","المجادلة","الحشر","الممتحنة","الصف","الجمعة","المنافقون","التغابن","الطلاق","التحريم","الملك","القلم","الحاقة","المعارج","نوح","الجن","المزمل","المدثر","القيامة","الإنسان","المرسلات","النبأ","النازعات","عبس","التكوير","الانفطار","المطففين","الانشقاق","البروج","الطارق","الأعلى","الغاشية","الفجر","البلد","الشمس","الليل","الضحى","الشرح","التين","العلق","القدر","البينة","الزلزلة","العاديات","القارعة","التكاثر","العصر","الهمزة","الفيل","قريش","الماعون","الكوثر","الكافرون","النصر","المسد","الإخلاص","الفلق","الناس"];
+
+    const adhkarData = {
+        sabah: [
+            { text: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ لا إِلَهَ إِلا اللَّهُ، وَحْدَهُ لا شَرِيكَ لَهُ...", count: 1 },
+            { text: "اللَّهُمَّ أَنْتَ رَبِّي لا إِلَهَ إِلا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ...", count: 1 },
+            { text: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ.", count: 3 },
+            { text: "رَضِيتُ بِاللَّهِ رَبًّا، وَبِالْإِسْلَامِ دِينًا، وَبِمُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ نَبِيًّا.", count: 3 },
+            { text: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ.", count: 100 }
+        ],
+        masaa: [
+            { text: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ لا إِلَهَ إِلا اللَّهُ، وَحْدَهُ لا شَرِيكَ لَهُ...", count: 1 },
+            { text: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ.", count: 3 },
+            { text: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ.", count: 3 },
+            { text: "اللَّهُمَّ بِكَ أَمْسَيْنَا وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ الْمَصِيرُ.", count: 1 }
+        ],
+        salah: [
+            { text: "أَسْتَغْفِرُ اللَّهَ (ثَلَاثاً) اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ، تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ.", count: 1 },
+            { text: "سُبْحَانَ اللَّهِ، وَالْحَمْدُ لِلَّهِ، وَاللَّهُ أَكْبَرُ.", count: 33 },
+            { text: "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ.", count: 1 },
+            { text: "قِرَاءَةُ آيَةِ الكُرْسِيّ.", count: 1 }
+        ],
+        nawm: [
+            { text: "بِاسْمِكَ رَبِّي وَضَعْتُ جَنْبِي، وَبِكَ أَرْفَعُهُ، فَإِنْ أَمْسَكْتَ نَفْسِي فَارْحَمْهَا، وَإِنْ أَرْسَلْتَهَا فَاحْفَظْهَا...", count: 1 },
+            { text: "اللَّهُمَّ إِنَّكَ خَلَقْتَ نَفْسِي وَأَنْتَ تَوَفَّاهَا، لَكَ مَمَاتُهَا وَمَحْيَاهَا...", count: 1 },
+            { text: "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا.", count: 1 },
+            { text: "قِرَاءَةُ المُعَوِّذَاتِ (الإخلاص، الفلق، الناس) مَعَ النَّفْثِ فِي الكَفَّيْنِ وَمَسْحِ الجَسَد.", count: 3 }
+        ]
+    };
+
+    const initialPoems = [
+        {id: 1, author: "لِسَانُ الدِّينِ بْنُ الخَطِيب", book: "مُوَشَّحَة جَادَكَ الغَيْث", text: "جَادَكَ الغَيْثُ إِذَا الغَيْثُ هَمَى\nيَا زَمَانَ الوَصْلِ بِالأَنْدَلُسِ\nلَمْ يَكُنْ وَصْلُكَ إِلَّا حُلُمًا\nفِي الكَرَى أَوْ خُلْسَةَ المُخْتَلِسِ"},
+        {id: 2, author: "ابْنُ زَيْدُون", book: "النُّونِيَّة", text: "أَضْحَى التَّنَائِي بَدِيلًا عَنْ تَدَانِينَا\nوَنَابَ عَنْ طِيبِ لُقْيَانَا تَجَافِينَا\nحَالَتْ لِفَقْدِكُمُ أَيَّامُنَا فَغَدَتْ\nسُودًا وَكَانَتْ بِكُمْ بِيضًا لَيَالِينَا"},
+        {id: 3, author: "أَبُو البَقَاء الرُّنْدِي", book: "رِثَاءُ الأَنْدَلُس", text: "لِكُلِّ شَيْءٍ إِذَا مَا تَمَّ نُقْصَانُ\nفَلَا يُغَرَّ بِطِيبِ العَيْشِ إِنْسَانُ\nهِيَ الأُمُورُ كَمَا شَاهَدْتَهَا دُوَلٌ\nمَنْ سَرَّهُ زَمَنٌ سَاءَتْهُ أَزْمَانُ"},
+        {id: 4, author: "وَلَّادَةُ بِنْتُ المُسْتَكْفِي", book: "أَشْعَارُ وَلَّادَة", text: "أَنَا وَاللَهِ أَصلُحُ لِلمَعالي\nوَأَمشي مِشيَتي وَأَتيهُ تيهَا\nوَأُمكِنُ عاشِقي مِن صَحنِ خَدّي\nوَأُعطي قُبلَتي مَن يَشتَهيها"},
+        {id: 5, author: "المُتَنَبِّي", book: "دِيوَانُ المُتَنَبِّي", text: "الخَيْلُ وَاللّيلُ وَالبَيْداءُ تَعرِفُني\nوَالسّيفُ وَالرّمحُ والقرْطاسُ وَالقَلَمُ\nصَحِبْتُ في الفَلَواتِ الوَحشَ منفَرِداً\nحتى تَعَجّبَ مني القُورُ وَالأكَمُ"}
+    ];
+
+    const initialBooks = [
+        {id: 1, category: "تُرَاثٌ وَأَدَب", title: "طَوْقُ الحَمَامَةِ فِي الأُلْفَةِ وَالأُلَّاف", author: "ابْنُ حَزْمٍ الأَنْدَلُسِي", desc: "كِتَابٌ عَظِيمٌ يُعَالِجُ مَوْضُوعَ الحُبِّ وَعَوَاطِفِ النَّفْسِ مِنْ عُمُقِ المُجْتَمَعِ الأَنْدَلُسِي."},
+        {id: 2, category: "تَارِيخٌ وَعُمْرَان", title: "مُقَدِّمَةُ ابْنِ خَلْدُون", author: "ابْنُ خَلْدُون", desc: "أَسَاسُ عِلْمِ الِاجْتِمَاعِ، يَشْرَحُ قَوَانِينَ صُعُودِ وَهُبُوطِ الأُمَمِ وَالحَضَارَات."},
+        {id: 3, category: "فَلْسَفَةٌ وَتَأَمُّل", title: "حَيُّ بْنُ يَقْظَان", author: "ابْنُ طُفَيْل", desc: "قِصَّةٌ فَلْسَفِيَّةٌ عَمِيقَةٌ تُصَوِّرُ تَأَمُّلَ الإِنْسَانِ فِي الطَّبِيعَةِ وَوُصُولَهُ لِلْخَالِق."},
+        {id: 4, category: "تَارِيخٌ وَأَدَب", title: "نَفْحُ الطِّيبِ مِنْ غُصْنِ الأَنْدَلُسِ الرَّطِيب", author: "المَقَّرِي التِّلِمْسَانِي", desc: "مَوْسُوعَةٌ تَارِيخِيَّةٌ وَأَدَبِيَّةٌ هَامَّةٌ عَنْ تَارِيخِ الأَنْدَلُسِ وَرِجَالَاتِهَا."},
+        {id: 5, category: "أَدَبٌ وَبَلَاغَة", title: "البَيَانُ وَالتَّبْيِين", author: "الجَاحِظ", desc: "مِنْ أُمَّهَاتِ كُتُبِ الأَدَبِ العَرَبِيّ، يُعْنَى بِالبَلَاغَةِ وَالخَطَابَةِ وَالفَصَاحَة."}
+    ];
+
+    function checkAuth() {
+        const saved = localStorage.getItem('diwanData');
+        if (saved) {
+            const parsedData = JSON.parse(saved);
+            if (parsedData.isLoggedIn) {
+                document.getElementById('auth-screen').classList.add('hidden');
+                init();
+                return;
+            }
+        }
+    }
+
+    async function performLogin(btnElement) {
+        const originalText = btnElement.innerHTML;
+        btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جَارِي فَتْحُ الأَبْوَاب...';
+        
+        setTimeout(async () => {
+            const userName = await customPrompt("مَرْحَباً بِكَ! مَا هُوَ الِاسْمُ الَّذِي نُنَادِيكَ بِهِ فِي الدِّيوَان؟", "ضَيْفُ الدِّيوَان");
+            if (userName) {
+                appData.isLoggedIn = true;
+                appData.userName = userName;
+                appData.initialized = true;
+                if (!appData.poems || appData.poems.length === 0) appData.poems = initialPoems;
+                if (!appData.books || appData.books.length === 0) appData.books = initialBooks;
+                saveData();
+                
+                const screen = document.getElementById('auth-screen');
+                screen.style.opacity = '0';
+                setTimeout(() => { 
+                    screen.classList.add('hidden'); 
+                    btnElement.innerHTML = originalText;
+                    init(); 
+                }, 500);
+            } else {
+                btnElement.innerHTML = originalText;
+            }
+        }, 600);
+    }
+
+    async function performLogout() {
+        if(await customConfirm("هَلْ أَنْتَ مُتَأَكِّدٌ؟ سَيَتِمُّ مَسْحُ جَمِيعِ سِجِلَّاتِكَ إِذَا لَمْ تَقُمْ بِحِفْظِ نُسْخَةٍ احْتِيَاطِيَّة.")) {
+            localStorage.removeItem('diwanData');
+            location.reload();
+        }
+    }
+
+    window.onload = checkAuth;
+
+    // حفظ الكناشة فورياً قبل إغلاق الصفحة أو تحديثها
+    window.addEventListener('beforeunload', () => {
+        const kunnashVal = document.getElementById('kunnash-input').value;
+        if (kunnashVal !== appData.kunnash) {
+            appData.kunnash = kunnashVal;
+            localStorage.setItem('diwanData', JSON.stringify(appData));
+        }
+    });
+
+    function openSidebar() {
+        document.getElementById('sidebar').classList.remove('translate-x-full');
+        document.getElementById('mobile-overlay').classList.remove('hidden');
+    }
+    function closeSidebar() {
+        document.getElementById('sidebar').classList.add('translate-x-full');
+        document.getElementById('mobile-overlay').classList.add('hidden');
+    }
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => { if(window.innerWidth < 768) closeSidebar(); });
+    });
+
+    function showDialog(options) {
+        return new Promise((resolve) => {
+            const modal = document.getElementById('custom-dialog');
+            const title = document.getElementById('dialog-title');
+            const msg = document.getElementById('dialog-message');
+            const inputsContainer = document.getElementById('dialog-inputs');
+            const cancelBtn = document.getElementById('dialog-cancel');
+            const confirmBtn = document.getElementById('dialog-confirm');
+
+            title.textContent = options.title || 'تَنْبِيه';
+            msg.innerHTML = options.message || '';
+            inputsContainer.innerHTML = '';
+            
+            if (options.type === 'prompt') {
+                inputsContainer.classList.remove('hidden');
+                options.inputs.forEach(inp => {
+                    const el = document.createElement('input');
+                    el.type = inp.type || 'text'; el.placeholder = inp.placeholder; el.id = inp.id;
+                    el.className = 'w-full classic-input p-3 rounded mb-2 font-bold font-amiri text-lg';
+                    inputsContainer.appendChild(el);
+                });
+            } else { inputsContainer.classList.add('hidden'); }
+
+            if (options.type === 'alert') { cancelBtn.classList.add('hidden'); } 
+            else { cancelBtn.classList.remove('hidden'); }
+
+            modal.classList.remove('hidden');
+
+            const cleanup = () => {
+                modal.classList.add('hidden');
+                confirmBtn.removeEventListener('click', onConfirm);
+                cancelBtn.removeEventListener('click', onCancel);
+            };
+
+            const onConfirm = () => {
+                cleanup();
+                if (options.type === 'prompt') {
+                    const results = options.inputs.map(inp => document.getElementById(inp.id).value);
+                    resolve(results.length === 1 ? results[0] : results);
+                } else { resolve(true); }
+            };
+            const onCancel = () => { cleanup(); resolve(null); };
+
+            confirmBtn.addEventListener('click', onConfirm);
+            cancelBtn.addEventListener('click', onCancel);
+        });
+    }
+
+    async function customAlert(msg) { await showDialog({ type: 'alert', message: msg }); }
+    async function customConfirm(msg) { return await showDialog({ type: 'confirm', message: msg, title: 'تَأْكِيدُ الأَمْر' }); }
+    async function customPrompt(title, placeholder) { return await showDialog({ type: 'prompt', title: title, inputs: [{id: 'inp1', placeholder}] }); }
+
+    function playTickSound() {
+        const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-software-interface-start-2574.mp3');
+        audio.volume = 0.2; audio.play().catch(e=>{});
+    }
+
+    function getGreeting() {
+        const hour = new Date().getHours();
+        if (hour >= 4 && hour < 12) return "صَبَاحُكَ مُبَارَكٌ";
+        else if (hour >= 12 && hour < 17) return "طَابَ نَهَارُكَ";
+        else return "مَسَاءُ الخَيْرَاتِ";
+    }
+
+    function init() {
+      const saved = localStorage.getItem('diwanData');
+      if (saved) { appData = { ...appData, ...JSON.parse(saved) }; }
+      
+      // احترام التعديلات السابقة: لا نضيف الكتب الافتراضية إذا كان المستخدم قد دخل مسبقاً (حتى لو قام بحذفها)
+      if (!appData.initialized) {
+          appData.poems = initialPoems;
+          appData.books = initialBooks;
+          appData.initialized = true;
+          saveData();
+      }
+
+      if (!appData.userName || appData.userName.trim() === '') appData.userName = 'ضَيْفُ الدِّيوَان';
+
+      // تصفير عدادات الأذكار في يوم جديد فقط
+      const today = new Date().toLocaleDateString('en-US');
+      if (appData.lastAdhkarDate !== today) {
+          appData.adhkarProgress = {};
+          appData.lastAdhkarDate = today;
+          saveData();
+      }
+
+      const hijriOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', calendar: 'islamic' };
+      document.getElementById('top-hijri-date').textContent = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', hijriOptions).format(new Date());
+
+      const greeting = getGreeting();
+      document.getElementById('top-greeting').textContent = greeting;
+      document.getElementById('dash-greeting').textContent = greeting;
+
+      applyTheme(); 
+      updateUserNameUI();
+      populateSurahSelectors(); 
+      renderBooks(); 
+      renderPoetry(); 
+      renderKanban(); 
+      renderHabits();
+      fetchPrayerTimes(); 
+      updateDashboardStats();
+      
+      const sabahBtn = document.querySelector('.adhkar-btn');
+      if(sabahBtn) renderAdhkar('sabah', sabahBtn);
+
+      document.getElementById('top-date').textContent = new Date().toLocaleDateString('ar-SA', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+      document.getElementById('kunnash-input').value = appData.kunnash || '';
+      
+      // العودة لآخر قسم كنت فيه بدل العودة للرئيسية وإضاعة التصفح
+      switchSection(appData.currentSection || 'dashboard');
+    }
+
+    function saveData() { localStorage.setItem('diwanData', JSON.stringify(appData)); updateDashboardStats(); }
+    
+    let kunnashTimeout;
+    function saveKunnash() { 
+        clearTimeout(kunnashTimeout);
+        kunnashTimeout = setTimeout(() => {
+            appData.kunnash = document.getElementById('kunnash-input').value; 
+            saveData(); 
+            const statusSpan = document.getElementById('kunnash-status');
+            statusSpan.style.opacity = '1';
+            setTimeout(() => { statusSpan.style.opacity = '0'; }, 2000);
+        }, 800);
+    }
+
+    function switchSection(sectionId) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(sectionId).classList.add('active');
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(btn => { if(btn.getAttribute('onclick').includes(sectionId)) btn.classList.add('active'); });
+      
+      appData.currentSection = sectionId;
+      saveData();
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateDashboardStats() {
+      const doneTasks = appData.tasks.filter(t => t.status === 'done').length;
+      const totalTasks = appData.tasks.length;
+      document.getElementById('stat-tasks').textContent = `${doneTasks} / ${totalTasks}`;
+      document.getElementById('stat-books').textContent = appData.books.length;
+      document.getElementById('stat-habits').textContent = appData.habits.length;
+      
+      const progress = totalTasks === 0 ? 0 : Math.round((doneTasks / totalTasks) * 100);
+      document.getElementById('stat-progress-text').textContent = `${progress}%`;
+      document.getElementById('stat-progress-bar').style.width = `${progress}%`;
+    }
+
+    function applyTheme() { document.body.setAttribute('data-theme', appData.theme); }
+    function setTheme(themeName) { appData.theme = themeName; applyTheme(); saveData(); }
+
+    function updateUserNameUI() {
+        document.getElementById('setting-name').value = appData.userName;
+        document.getElementById('dash-name').textContent = appData.userName;
+        document.getElementById('top-name').textContent = appData.userName;
+    }
+
+    async function saveSettings() {
+        const newName = document.getElementById('setting-name').value.trim();
+        if(newName) {
+            appData.userName = newName;
+            updateUserNameUI();
+            saveData();
+            await customAlert("تَمَّ حِفْظُ تَدَابِيرِ الدِّيوَانِ بِنَجَاح.");
+        } else {
+            await customAlert("الرَّجَاءُ كِتَابَةُ الِاسْمِ أَوَّلاً.");
+        }
+    }
+
+    async function fetchPrayerTimes() {
+        try {
+            const locationRes = await fetch('https://ipapi.co/json/');
+            const locationData = await locationRes.json();
+            const city = locationData.city || "Mecca";
+            const country = locationData.country_name || "Saudi Arabia";
+            
+            document.getElementById('prayer-city').textContent = `(${city})`;
+
+            const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}&method=4`);
+            const data = await res.json();
+            const timings = data.data.timings;
+            
+            document.getElementById('pt-fajr').textContent = timings.Fajr;
+            document.getElementById('pt-sunrise').textContent = timings.Sunrise;
+            document.getElementById('pt-dhuhr').textContent = timings.Dhuhr;
+            document.getElementById('pt-asr').textContent = timings.Asr;
+            document.getElementById('pt-maghrib').textContent = timings.Maghrib;
+            document.getElementById('pt-isha').textContent = timings.Isha;
+        } catch(e) { 
+            console.log("حدث خطأ في جلب المواقيت، سيتم عرض توقيت مكة المكرمة.", e);
+            try {
+                const res = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Mecca&country=Saudi%20Arabia&method=4');
+                const data = await res.json();
+                const timings = data.data.timings;
+                document.getElementById('prayer-city').textContent = `(مكة المكرمة)`;
+                document.getElementById('pt-fajr').textContent = timings.Fajr;
+                document.getElementById('pt-sunrise').textContent = timings.Sunrise;
+                document.getElementById('pt-dhuhr').textContent = timings.Dhuhr;
+                document.getElementById('pt-asr').textContent = timings.Asr;
+                document.getElementById('pt-maghrib').textContent = timings.Maghrib;
+                document.getElementById('pt-isha').textContent = timings.Isha;
+            } catch(err) {}
+        }
+    }
+
+    let focusTimer;
+    function toggleFocusMode() { document.getElementById('focus-modal').classList.remove('hidden'); }
+    function startFocusTimer(minutes) {
+      clearInterval(focusTimer); let seconds = minutes * 60; const display = document.getElementById('focus-timer-display'); display.textContent = `${minutes}:00`;
+      focusTimer = setInterval(async () => {
+        seconds--; const m = Math.floor(seconds / 60); const s = seconds % 60; display.textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+        if (seconds <= 0) { 
+            clearInterval(focusTimer); 
+            playTickSound();
+            await customAlert("انْقَضَتْ خَلْوَةُ التَّرْكِيز. تَقَبَّلَ اللَّهُ عَمَلَكَ وَأَثَابَك!"); 
+            exitFocusMode(); 
+        }
+      }, 1000);
+    }
+    function exitFocusMode() { 
+        clearInterval(focusTimer); 
+        document.getElementById('focus-modal').classList.add('hidden'); 
+        document.getElementById('audio-water').pause(); document.getElementById('btn-water').classList.remove('playing');
+        document.getElementById('audio-ney').pause(); document.getElementById('btn-ney').classList.remove('playing');
+    }
+    function toggleSound(type) {
+        const audio = document.getElementById(`audio-${type}`);
+        const btn = document.getElementById(`btn-${type}`);
+        if(audio.paused) { audio.play(); btn.classList.add('playing'); } 
+        else { audio.pause(); btn.classList.remove('playing'); }
+    }
+
+    function populateSurahSelectors() {
+        const mainSelector = document.getElementById('surah-selector');
+        const hSelector = document.getElementById('husary-surah');
+        const mSelector = document.getElementById('minshawi-surah');
+        const aSelector = document.getElementById('abdulbasit-surah');
+        
+        let optionsHTML = '<option value="">اخْتَرْ السُّورَةَ...</option>';
+        surahs.forEach((s, index) => {
+            const num = (index + 1).toString().padStart(3, '0');
+            optionsHTML += `<option value="${num}">${index + 1}. سُورَةُ ${s}</option>`;
+        });
+
+        mainSelector.innerHTML = '<option value="">اخْتَرْ السُّورَةَ...</option>' + surahs.map((s, i) => `<option value="${i+1}">${i+1}. سُورَةُ ${s}</option>`).join('');
+        hSelector.innerHTML = optionsHTML;
+        mSelector.innerHTML = optionsHTML;
+        aSelector.innerHTML = optionsHTML;
+    }
+
+    async function loadSurah() {
+        const surahNumber = document.getElementById('surah-selector').value;
+        if (!surahNumber) return;
+        const container = document.getElementById('quran-reader-container');
+        container.innerHTML = '<div class="text-center pt-20"><i class="fa-solid fa-spinner fa-spin text-5xl text-[var(--accent)]"></i><p class="mt-4 font-bold font-amiri text-xl">جَارِي جَلْبُ الآيَاتِ...</p></div>';
+        
+        try {
+            const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}`);
+            if(!res.ok) throw new Error("Network response was not ok");
+            const data = await res.json();
+            const ayahs = data.data.ayahs;
+            let html = `<h3 class="text-center font-amiri text-4xl font-bold mb-8 text-[var(--accent)] title-ornament">سُورَةُ ${data.data.name.replace('سُورَةُ ', '')}</h3>`;
+            html += `<p class="quran-text">`;
+            
+            if(surahNumber != 1 && surahNumber != 9) {
+                 html += `<span class="block text-center mb-8 text-3xl text-[var(--accent)]">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span>`;
+            }
+            ayahs.forEach(a => {
+                let text = a.text;
+                if(surahNumber != 1 && a.numberInSurah === 1) text = text.replace('بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ', '');
+                html += `${text} <span class="ayah-number">${a.numberInSurah}</span> `;
+            });
+            html += `</p>`;
+            container.innerHTML = html;
+        } catch(e) { container.innerHTML = '<p class="text-center text-red-600 pt-20 font-bold font-amiri text-xl">عُذْراً، حَدَثَ خَطَأٌ فِي الاِتِّصَال. تَيَقَّنْ مِنْ شَبَكَتِك.</p>'; }
+    }
+
+    async function saveWirdMarker() {
+        const val = document.getElementById('surah-selector').value;
+        if(val) { 
+            appData.quranWird = val; 
+            saveData(); 
+            playTickSound();
+            await customAlert(`تَمَّ حِفْظُ المَقَامِ عِنْدَ: سُورَةِ ${surahs[val-1]}`); 
+        } else {
+            await customAlert("الرَّجَاءُ اخْتِيَارُ سُورَةٍ أَوَّلًا.");
+        }
+    }
+    
+    function loadSavedWird() {
+        if(appData.quranWird) {
+            document.getElementById('surah-selector').value = appData.quranWird;
+            loadSurah();
+        }
+    }
+
+    function playQuranAudio(reciter) {
+        const surahNum = document.getElementById(`${reciter}-surah`).value;
+        if(!surahNum) return;
+        const audioTag = document.getElementById(`audio-${reciter}`);
+        const urls = {
+            'husary': 'https://server13.mp3quran.net/husr/',
+            'minshawi': 'https://server10.mp3quran.net/minsh/',
+            'abdulbasit': 'https://server7.mp3quran.net/basit/'
+        };
+        audioTag.src = `${urls[reciter]}${surahNum}.mp3`;
+        audioTag.play().catch(e => console.log("جاري التحميل..."));
+    }
+
+    function renderAdhkar(type, btnElement) {
+        if(btnElement) {
+            document.querySelectorAll('.adhkar-btn').forEach(b => {
+                b.className = 'adhkar-btn px-6 py-2 classic-btn-outline rounded font-bold text-md';
+            });
+            btnElement.className = 'adhkar-btn px-6 py-2 classic-btn rounded font-bold text-md';
+        }
+
+        const list = document.getElementById('adhkar-list');
+        list.innerHTML = adhkarData[type].map((a, index) => {
+            const id = `${type}-${index}`;
+            if (appData.adhkarProgress[id] === undefined) {
+                appData.adhkarProgress[id] = a.count || 1;
+            }
+            const currentCount = appData.adhkarProgress[id];
+            const isDone = currentCount === 0;
+            
+            return `
+            <div id="dhikr-card-${id}" onclick="decrementDhikr('${id}', ${a.count})" class="classic-card p-6 md:p-8 rounded-xl border border-[var(--border)] text-xl md:text-3xl leading-loose text-center font-amiri hover:shadow-lg transition-all cursor-pointer relative overflow-hidden select-none" style="${isDone ? 'opacity: 0.5; pointer-events: none; border-color: #22c55e;' : ''}">
+                <div class="mb-6">${a.text}</div>
+                <div id="dhikr-ui-${id}">
+                    ${isDone ? 
+                        `<div class="inline-block px-5 py-2 rounded-full bg-green-600 text-white font-bold text-sm shadow-md font-sans"><i class="fa-solid fa-check-double ml-1"></i> تَمَّ بِحَمْدِ اللَّه</div>` : 
+                        `<div class="inline-block px-5 py-2 rounded-full bg-[var(--accent)] text-[var(--bg-card)] font-bold text-sm shadow-md font-sans tracking-wide">مُتَبَقِّي: <span id="dhikr-count-${id}">${currentCount}</span></div>`
+                    }
+                </div>
+            </div>
+            `;
+        }).join('');
+    }
+
+    function decrementDhikr(id, maxCount) {
+        if (appData.adhkarProgress[id] > 0) {
+            appData.adhkarProgress[id]--;
+            saveData(); // الحفظ الفوري
+            
+            const countSpan = document.getElementById(`dhikr-count-${id}`);
+            const card = document.getElementById(`dhikr-card-${id}`);
+            const uiDiv = document.getElementById(`dhikr-ui-${id}`);
+            
+            if (appData.adhkarProgress[id] === 0) {
+                card.style.opacity = '0.5';
+                card.style.pointerEvents = 'none';
+                card.style.borderColor = "#22c55e";
+                uiDiv.innerHTML = `<div class="inline-block px-5 py-2 rounded-full bg-green-600 text-white font-bold text-sm shadow-md font-sans"><i class="fa-solid fa-check-double ml-1"></i> تَمَّ بِحَمْدِ اللَّه</div>`;
+                playTickSound();
+            } else {
+                countSpan.textContent = appData.adhkarProgress[id];
+                card.style.transform = 'scale(0.98)';
+                setTimeout(() => card.style.transform = 'scale(1)', 100);
+            }
+        }
+    }
+
+    function renderBooks() {
+        const grid = document.getElementById('books-grid');
+        const categories = [...new Set(appData.books.map(b => b.category || 'عَام'))];
+        
+        if(appData.books.length === 0) {
+            grid.innerHTML = '<div class="col-span-full text-center py-10 opacity-50 font-bold font-amiri text-xl">خِزَانَتُكَ فَارِغَةٌ بَعْد.</div>';
+            return;
+        }
+
+        grid.innerHTML = categories.map(cat => {
+            const catBooks = appData.books.filter(b => (b.category || 'عَام') === cat);
+            return `
+            <div class="col-span-full mt-6 mb-2 border-b-2 pb-2 border-[var(--accent)] opacity-80">
+                <h3 class="text-2xl font-bold font-amiri text-[var(--accent)]"><i class="fa-solid fa-book-bookmark ml-2 text-lg"></i>${cat}</h3>
+            </div>
+            ${catBooks.map(b => `
+                <div class="classic-card rounded-lg p-6 relative group border-t-4 hover:-translate-y-1 transition-transform" style="border-top-color: var(--accent)">
+                    <i onclick="deleteBook(${b.id})" class="fa-solid fa-trash-can delete-btn absolute top-3 left-3 bg-red-100 p-2 rounded-full text-sm"></i>
+                    <i class="fa-solid fa-scroll text-5xl mb-4 opacity-10 absolute bottom-4 left-4 text-[var(--accent)]"></i>
+                    <h3 class="font-bold font-amiri text-2xl mb-2">${b.title}</h3>
+                    <p class="text-md font-bold mb-4 font-amiri" style="color: var(--accent)">${b.author}</p>
+                    <p class="text-sm leading-relaxed" style="color: var(--text-muted)">${b.desc}</p>
+                </div>
+            `).join('')}`;
+        }).join('');
+    }
+
+    async function addBook() {
+        const data = await showDialog({ type: 'prompt', title: 'إِيدَاعُ كِتَابٍ جَدِيد', inputs: [
+            {id: 'bCat', placeholder: 'التَّصْنِيف (مِثَال: تَارِيخ، أَدَب، تَزْكِيَة)'},
+            {id: 'bTitle', placeholder: 'عُنْوَانُ الكِتَاب'},
+            {id: 'bAuthor', placeholder: 'المُؤَلِّف'},
+            {id: 'bDesc', placeholder: 'وَصْفٌ أَوْ اقْتِبَاسٌ مِنَ الكِتَاب'}
+        ]});
+        if(data && data[1]) {
+            appData.books.push({id: Date.now(), category: data[0]||'عَام', title: data[1], author: data[2]||'مَجْهُول', desc: data[3]||''}); 
+            saveData(); renderBooks();
+        }
+    }
+    async function deleteBook(id) { if(await customConfirm("هَلْ تُرِيدُ إِخْرَاجَ هَذَا الكِتَابِ مِنَ الخِزَانَة؟")) { appData.books = appData.books.filter(b => b.id !== id); saveData(); renderBooks(); } }
+
+    function renderPoetry() {
+        const list = document.getElementById('poetry-list');
+        if(appData.poems.length === 0) {
+            list.innerHTML = '<div class="text-center py-10 opacity-50 font-bold font-amiri text-xl">لَمْ تُدَوِّنْ أَيَّ قَصِيدَةٍ بَعْد.</div>';
+            return;
+        }
+
+        list.innerHTML = appData.poems.map(p => `
+            <div class="p-8 md:p-10 rounded-lg border-2 group relative text-center mb-6 shadow-md hover:shadow-lg transition-all" style="background-color: var(--bg-body); border-color: var(--border)">
+                <i onclick="deletePoem(${p.id})" class="fa-solid fa-trash-can delete-btn absolute top-4 left-4 bg-red-100 p-2 rounded-full text-sm"></i>
+                <i class="fa-solid fa-quote-right absolute top-6 right-6 text-4xl opacity-10 text-[var(--accent)]"></i>
+                <i class="fa-solid fa-quote-left absolute bottom-6 left-6 text-4xl opacity-10 text-[var(--accent)]"></i>
+                <p class="font-amiri text-2xl md:text-4xl leading-loose text-[var(--text-main)]">${p.text.replace(/\n/g, '<br>')}</p>
+                <div class="mt-8 pt-4 border-t border-[var(--border)] w-3/4 md:w-1/2 mx-auto">
+                    <p class="font-bold text-lg font-amiri" style="color: var(--accent)">${p.author}</p>
+                    <p class="text-sm opacity-70 mt-1 font-amiri"><i class="fa-solid fa-scroll ml-1"></i> ${p.book || 'مَجْهُولُ المَصْدَر'}</p>
+                </div>
+            </div>`).join('');
+    }
+
+    async function addPoem() { 
+        const data = await showDialog({ type: 'prompt', title: 'تَدْوِينُ قَصِيدَة', inputs: [ 
+            {id: 'pText', placeholder: 'أَبْيَاتُ القَصِيدَة...'}, 
+            {id: 'pAuth', placeholder: 'القَائِل'},
+            {id: 'pBook', placeholder: 'اسْمُ الدِّيوَانِ أَوْ الكِتَاب'}
+        ]});
+        if(data && data[0]) { appData.poems.push({id: Date.now(), text: data[0], author: data[1] || "مَجْهُول", book: data[2] || "غَيْرُ مُحَدَّد"}); saveData(); renderPoetry(); } 
+    }
+    async function deletePoem(id) { if(await customConfirm("هَلْ أَنْتَ مُتَأَكِّدٌ مِنْ مَحْوِ هَذِهِ القَصِيدَة؟")) { appData.poems = appData.poems.filter(p => p.id !== id); saveData(); renderPoetry(); } }
+
+    const kanbanStatuses = ['todo', 'inprogress', 'done'];
+    function renderKanban() {
+      const board = document.getElementById('kanban-board');
+      const configs = {
+          'todo': { title: 'قَيْدَ الِانْتِظَار', icon: 'fa-pause' },
+          'inprogress': { title: 'قَيْدَ الإِنْجَاز', icon: 'fa-spinner' },
+          'done': { title: 'تَمَّت بِحَمْدِ اللَّه', icon: 'fa-check-double' }
+      };
+
+      board.innerHTML = kanbanStatuses.map(status => {
+        const filtered = appData.tasks.filter(t => t.status === status);
+        return `<div class="classic-card rounded-lg p-5 min-h-[300px] border-t-4 shadow-md" style="border-top-color: var(--accent)">
+            <h3 class="font-bold text-lg font-amiri border-b pb-3 mb-5 text-[var(--accent)] flex justify-between items-center">
+                <span><i class="fa-solid ${configs[status].icon} ml-2"></i>${configs[status].title}</span>
+                <span class="bg-[var(--bg-body)] px-3 py-1 rounded-full text-sm border border-[var(--border)] shadow-inner">${filtered.length}</span>
+            </h3>
+            <div class="space-y-3">
+              ${filtered.map(t => `
+              <div class="classic-input rounded p-4 text-md flex justify-between items-center shadow-sm task-${status} transition-transform hover:scale-[1.02]">
+                  <span class="flex-1 font-bold font-amiri text-lg ${status === 'done' ? 'line-through text-gray-400' : ''}" onclick="toggleTaskStatus(${t.id})" style="cursor:pointer">${t.title}</span>
+                  <i onclick="deleteTask(${t.id})" class="fa-solid fa-trash-can text-red-400 cursor-pointer hover:text-red-600 transition p-2 ml-1"></i>
+              </div>`).join('')}
+              ${filtered.length === 0 ? `<p class="text-center text-sm opacity-50 py-6 font-bold font-amiri text-lg">صَحِيفَةٌ بَيْضَاء</p>` : ''}
+            </div>
+        </div>`;
+      }).join('');
+    }
+
+    function toggleTaskStatus(id) {
+        const task = appData.tasks.find(t => t.id === id);
+        if(task) {
+            if(task.status === 'todo') task.status = 'inprogress';
+            else if(task.status === 'inprogress') { task.status = 'done'; playTickSound(); }
+            else task.status = 'todo';
+            saveData(); renderKanban();
+        }
+    }
+
+    async function addNewTask() { const t = await customPrompt("عُنْوَانُ المُهِمَّةِ الجَدِيدَة:"); if(t) { appData.tasks.push({id: Date.now(), title: t, status: "todo"}); saveData(); renderKanban(); } }
+    async function deleteTask(id) { if(await customConfirm("هَلْ تُرِيدُ مَحْوَ هَذِهِ المُهِمَّة نِهَائِيّاً؟")) { appData.tasks = appData.tasks.filter(t => t.id !== id); saveData(); renderKanban(); } }
+
+    function renderHabits() {
+      const list = document.getElementById('habits-list');
+      if(appData.habits.length === 0) { list.innerHTML = '<p class="text-center text-md opacity-50 font-bold font-amiri text-xl py-4">لَمْ تَغْرِسْ أَيَّ عَادَةٍ بَعْد.</p>'; return; }
+
+      list.innerHTML = appData.habits.map((h, i) => `<div class="classic-card rounded-lg p-5 flex justify-between items-center font-bold border-r-4 shadow-sm hover:-translate-y-1 transition-transform" style="border-right-color: var(--accent)">
+          <span class="text-xl font-amiri"><i class="fa-solid fa-seedling text-[var(--accent)] ml-3 opacity-80"></i> ${h.name}</span>
+          <i onclick="deleteHabit(${i})" class="fa-solid fa-xmark text-red-400 bg-red-50 p-2 rounded cursor-pointer hover:bg-red-500 hover:text-white transition w-8 h-8 flex items-center justify-center"></i>
+          </div>`).join('');
+    }
+    
+    async function addHabit() { const n = await customPrompt("اسْمُ العَادَةِ أَوْ الخَصْلَة (مِثَال: قِيَامُ اللَّيْل، قِرَاءَةُ حِزْبٍ):"); if(n) { appData.habits.push({name:n}); saveData(); renderHabits(); } }
+    async function deleteHabit(i) { if(await customConfirm("هَلْ تُرِيدُ إِزَالَةَ هَذِهِ العَادَة مِنْ صَحِيفَتِك؟")) { appData.habits.splice(i, 1); saveData(); renderHabits(); } }
+
+    function exportData() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        const date = new Date().toISOString().split('T')[0];
+        downloadAnchorNode.setAttribute("download", `diwan_andalus_backup_${date}.json`);
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    }
+
+    function importData(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            try {
+                const importedData = JSON.parse(e.target.result);
+                if (importedData && importedData.isLoggedIn !== undefined) {
+                    appData = importedData;
+                    saveData();
+                    await customAlert("تَمَّ اسْتِرْدَادُ سِجِلَّاتِ الدِّيوَانِ بِنَجَاح. سَيَتِمُّ تَجْدِيدُ المَجْلِسِ الآن.");
+                    setTimeout(()=> location.reload(), 1500);
+                } else {
+                    await customAlert("نُسْخَةُ السِّجِلَّاتِ غَيْرُ صَالِحَةٍ أَوْ تَالِفَة.");
+                }
+            } catch (err) {
+                await customAlert("حَدَثَ خَطَأٌ أَثْنَاءَ قِرَاءَةِ السِّجِلّ.");
+            }
+        };
+        reader.readAsText(file);
+    }
+  </script>
+</body>
+</html>
