@@ -9,7 +9,11 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+
   
   <style>
     :root {
@@ -78,7 +82,7 @@
       transition: opacity 0.5s ease, filter 0.5s ease;
     }
 
-    h1, h2, h3, h4, .font-amiri { font-family: 'Amiri', serif; }
+    h1, h2, h3, h4, .font-amiri { font-family: 'Tajawal', sans-serif; }
 
     .classic-card { background-color: var(--bg-card); border: var(--border-double); box-shadow: var(--shadow); transition: all 0.3s ease; }
     .classic-input { background-color: var(--bg-body); border: 1px solid var(--border); color: var(--text-main); transition: all 0.3s; }
@@ -105,7 +109,7 @@
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-    .quran-text { font-family: 'Amiri', serif; font-size: 1.8rem; line-height: 2.5; text-align: justify; direction: rtl; }
+    .quran-text { font-family: 'Tajawal', sans-serif; font-size: 1.8rem; line-height: 2.5; text-align: justify; direction: rtl; }
     .ayah-number { display: inline-block; width: 30px; height: 30px; line-height: 30px; text-align: center; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="none" stroke="%238b5a2b" stroke-width="5"/><circle cx="50" cy="50" r="35" fill="none" stroke="%238b5a2b" stroke-width="2" stroke-dasharray="5,5"/></svg>') no-repeat center center; background-size: contain; font-size: 0.9rem; margin: 0 8px; color: var(--accent); }
     
     .audio-player-card { background: var(--bg-body); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
@@ -215,6 +219,575 @@
   </style>
 </style>
 
+
+<style id="mobile-extreme-patch">
+body { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: contain; }
+main { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
+
+/* Tabs Styling */
+.tab-btn { transition: 0.3s; flex: 1; text-align: center; }
+.tab-btn.active { background: var(--accent); color: var(--bg-card); box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid var(--accent); }
+.tab-btn.inactive { background: transparent; color: var(--accent); border: 2px solid var(--accent); opacity: 0.8; }
+
+/* Grid Improvements */
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.horizontal-scroll { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 16px; padding-bottom: 12px; scrollbar-width: none; }
+.horizontal-scroll::-webkit-scrollbar { display: none; }
+.horizontal-scroll > * { scroll-snap-align: center; flex: 0 0 75%; max-width: 300px; }
+
+/* Bottom Sheet Modal for Hisn */
+.bottom-sheet { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-card); border-top-left-radius: 28px; border-top-right-radius: 28px; box-shadow: 0 -10px 40px rgba(0,0,0,0.2); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 1000; display: flex; flex-direction: column; max-height: 85vh; border-top: 2px solid var(--accent); }
+.bottom-sheet.open { transform: translateY(0); }
+.bottom-sheet-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.bottom-sheet-body { overflow-y: auto; padding: 20px; padding-bottom: calc(30px + env(safe-area-inset-bottom)); flex: 1; }
+.bottom-sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 999; opacity: 0; pointer-events: none; transition: 0.4s; }
+.bottom-sheet-overlay.open { opacity: 1; pointer-events: auto; }
+
+/* Hisn Styling inside Sheet */
+.hisn-item { border: 1px solid var(--border); border-radius: 20px; background: var(--bg-body); padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); position: relative; overflow: hidden;}
+.hisn-text { font-family: Tajawal, sans-serif; font-size: 1.3rem; line-height: 2.2; color: var(--text-main); margin-bottom: 16px; text-align: justify;}
+.hisn-count { display: inline-flex; align-items: center; gap: 6px; background: color-mix(in srgb, var(--accent) 15%, transparent); border: 1px solid var(--accent); border-radius: 999px; padding: 6px 14px; font-size: 0.9rem; color: var(--accent); font-weight: bold; }
+
+@media (max-width: 768px) {
+  #auth-screen { display: none !important; opacity: 0 !important; pointer-events: none !important; }
+  body { overflow-x: hidden; }
+  main { margin-right: 0 !important; width: 100% !important; }
+  header { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--bg-body) 90%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+  aside#sidebar { display: none !important; }
+
+  /* Smart Grids (Not boring vertical 1fr) */
+  .grid { grid-template-columns: 1fr !important; gap: 14px !important; }
+  .grid.smart-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+
+  /* Make dashboard stats 2 columns */
+  #dashboard .grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+  .classic-card { border-radius: 22px !important; padding: 18px !important; }
+  .quran-text { font-size: 1.55rem !important; line-height: 2.5 !important; }
+
+  /* App-like Bottom Navigation */
+  .mobile-bottom-nav { 
+    position: fixed; left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom));
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px;
+    padding: 10px; border: 1px solid var(--border); border-radius: 28px;
+    background: color-mix(in srgb, var(--bg-card) 92%, transparent);
+    backdrop-filter: blur(20px); box-shadow: 0 10px 40px rgba(0,0,0,0.15); z-index: 100;
+  }
+  .mobile-bottom-nav button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 58px; border-radius: 18px; color: var(--text-muted); transition: 0.3s; background: transparent; border: none; outline: none; }
+  .mobile-bottom-nav button i { font-size: 1.35rem; transition: 0.3s; }
+  .mobile-bottom-nav button span { font-size: 0.65rem; font-weight: 800; opacity: 0.8; transition: 0.3s; }
+  .mobile-bottom-nav button.active { background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent); }
+  .mobile-bottom-nav button.active i { transform: translateY(-2px) scale(1.1); }
+  .mobile-bottom-nav button.active span { opacity: 1; }
+}
+</style>
+
+
+<style id="advanced-animations-patch">
+/* Global Smooth Scroll */
+html { scroll-behavior: smooth; }
+
+/* Advanced Animations */
+@keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(30px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes fadeInScale {
+    0% { opacity: 0; transform: scale(0.9); }
+    100% { opacity: 1; transform: scale(1); }
+}
+@keyframes slideInRight {
+    0% { opacity: 0; transform: translateX(30px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+/* Staggered Items Animation */
+.section.active .classic-card, 
+.section.active .hisn-item,
+.section.active .hisn-card,
+.section.active .adhkar-btn {
+    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+}
+
+/* Generate delays for up to 30 items */
+.section.active *:nth-child(1) > .classic-card, .section.active .grid > *:nth-child(1), .section.active .space-y-4 > *:nth-child(1) { animation-delay: 0.05s; }
+.section.active *:nth-child(2) > .classic-card, .section.active .grid > *:nth-child(2), .section.active .space-y-4 > *:nth-child(2) { animation-delay: 0.1s; }
+.section.active *:nth-child(3) > .classic-card, .section.active .grid > *:nth-child(3), .section.active .space-y-4 > *:nth-child(3) { animation-delay: 0.15000000000000002s; }
+.section.active *:nth-child(4) > .classic-card, .section.active .grid > *:nth-child(4), .section.active .space-y-4 > *:nth-child(4) { animation-delay: 0.2s; }
+.section.active *:nth-child(5) > .classic-card, .section.active .grid > *:nth-child(5), .section.active .space-y-4 > *:nth-child(5) { animation-delay: 0.25s; }
+.section.active *:nth-child(6) > .classic-card, .section.active .grid > *:nth-child(6), .section.active .space-y-4 > *:nth-child(6) { animation-delay: 0.30000000000000004s; }
+.section.active *:nth-child(7) > .classic-card, .section.active .grid > *:nth-child(7), .section.active .space-y-4 > *:nth-child(7) { animation-delay: 0.35000000000000003s; }
+.section.active *:nth-child(8) > .classic-card, .section.active .grid > *:nth-child(8), .section.active .space-y-4 > *:nth-child(8) { animation-delay: 0.4s; }
+.section.active *:nth-child(9) > .classic-card, .section.active .grid > *:nth-child(9), .section.active .space-y-4 > *:nth-child(9) { animation-delay: 0.45s; }
+.section.active *:nth-child(10) > .classic-card, .section.active .grid > *:nth-child(10), .section.active .space-y-4 > *:nth-child(10) { animation-delay: 0.5s; }
+.section.active *:nth-child(11) > .classic-card, .section.active .grid > *:nth-child(11), .section.active .space-y-4 > *:nth-child(11) { animation-delay: 0.55s; }
+.section.active *:nth-child(12) > .classic-card, .section.active .grid > *:nth-child(12), .section.active .space-y-4 > *:nth-child(12) { animation-delay: 0.6000000000000001s; }
+.section.active *:nth-child(13) > .classic-card, .section.active .grid > *:nth-child(13), .section.active .space-y-4 > *:nth-child(13) { animation-delay: 0.65s; }
+.section.active *:nth-child(14) > .classic-card, .section.active .grid > *:nth-child(14), .section.active .space-y-4 > *:nth-child(14) { animation-delay: 0.7000000000000001s; }
+.section.active *:nth-child(15) > .classic-card, .section.active .grid > *:nth-child(15), .section.active .space-y-4 > *:nth-child(15) { animation-delay: 0.75s; }
+.section.active *:nth-child(16) > .classic-card, .section.active .grid > *:nth-child(16), .section.active .space-y-4 > *:nth-child(16) { animation-delay: 0.8s; }
+.section.active *:nth-child(17) > .classic-card, .section.active .grid > *:nth-child(17), .section.active .space-y-4 > *:nth-child(17) { animation-delay: 0.8500000000000001s; }
+.section.active *:nth-child(18) > .classic-card, .section.active .grid > *:nth-child(18), .section.active .space-y-4 > *:nth-child(18) { animation-delay: 0.9s; }
+.section.active *:nth-child(19) > .classic-card, .section.active .grid > *:nth-child(19), .section.active .space-y-4 > *:nth-child(19) { animation-delay: 0.9500000000000001s; }
+.section.active *:nth-child(20) > .classic-card, .section.active .grid > *:nth-child(20), .section.active .space-y-4 > *:nth-child(20) { animation-delay: 1.0s; }
+.section.active *:nth-child(21) > .classic-card, .section.active .grid > *:nth-child(21), .section.active .space-y-4 > *:nth-child(21) { animation-delay: 1.05s; }
+.section.active *:nth-child(22) > .classic-card, .section.active .grid > *:nth-child(22), .section.active .space-y-4 > *:nth-child(22) { animation-delay: 1.1s; }
+.section.active *:nth-child(23) > .classic-card, .section.active .grid > *:nth-child(23), .section.active .space-y-4 > *:nth-child(23) { animation-delay: 1.1500000000000001s; }
+.section.active *:nth-child(24) > .classic-card, .section.active .grid > *:nth-child(24), .section.active .space-y-4 > *:nth-child(24) { animation-delay: 1.2000000000000002s; }
+.section.active *:nth-child(25) > .classic-card, .section.active .grid > *:nth-child(25), .section.active .space-y-4 > *:nth-child(25) { animation-delay: 1.25s; }
+.section.active *:nth-child(26) > .classic-card, .section.active .grid > *:nth-child(26), .section.active .space-y-4 > *:nth-child(26) { animation-delay: 1.3s; }
+.section.active *:nth-child(27) > .classic-card, .section.active .grid > *:nth-child(27), .section.active .space-y-4 > *:nth-child(27) { animation-delay: 1.35s; }
+.section.active *:nth-child(28) > .classic-card, .section.active .grid > *:nth-child(28), .section.active .space-y-4 > *:nth-child(28) { animation-delay: 1.4000000000000001s; }
+.section.active *:nth-child(29) > .classic-card, .section.active .grid > *:nth-child(29), .section.active .space-y-4 > *:nth-child(29) { animation-delay: 1.4500000000000002s; }
+.section.active *:nth-child(30) > .classic-card, .section.active .grid > *:nth-child(30), .section.active .space-y-4 > *:nth-child(30) { animation-delay: 1.5s; }
+
+/* Hover Effects for Desktop */
+@media (hover: hover) and (pointer: fine) {
+    .classic-card { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .classic-card:hover { transform: translateY(-8px) scale(1.01); box-shadow: 0 20px 40px rgba(0,0,0,0.08); border-color: var(--accent); }
+    .classic-btn:hover, .classic-btn-outline:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+    .nav-btn:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); padding-right: 2rem; }
+    .tab-btn:hover { transform: translateY(-2px); }
+}
+
+/* Glassmorphism & UI Polish */
+header { background: color-mix(in srgb, var(--bg-body) 80%, transparent) !important; backdrop-filter: blur(20px); border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent); }
+aside#sidebar { border-left: 1px solid color-mix(in srgb, var(--border) 50%, transparent); background: color-mix(in srgb, var(--bg-card) 95%, transparent); backdrop-filter: blur(10px); }
+
+/* Mobile Polish */
+@media (max-width: 768px) {
+    .mobile-bottom-nav { background: color-mix(in srgb, var(--bg-card) 85%, transparent) !important; backdrop-filter: blur(25px); border: 1px solid color-mix(in srgb, var(--border) 60%, transparent) !important; }
+    .mobile-bottom-nav button:active { transform: scale(0.9); }
+    .bottom-sheet { background: color-mix(in srgb, var(--bg-card) 95%, transparent); backdrop-filter: blur(20px); }
+}
+
+/* Custom Scrollbar for Desktop */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-body); }
+::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--border) 80%, var(--accent)); border-radius: 10px; border: 2px solid var(--bg-body); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+</style>
+
+
+<style id="arabic-desktop-theme">
+/* Islamic Geometric Pattern for Desktop Background */
+@media (min-width: 769px) {
+    body {
+        background-image: url('data:image/svg+xml;utf8,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%238b5a2b" fill-opacity="0.04"><path d="M30 30L15 15H0v15l15 15-15 15v15h15L30 45l15 15h15V45L45 30l15-15V0H45L30 15z"/></g></g></svg>'), var(--bg-body) !important;
+        background-attachment: fixed;
+    }
+
+    /* Make the Sidebar look like an antique index */
+    aside#sidebar {
+        border-left: 2px solid var(--accent);
+        box-shadow: -4px 0 15px rgba(0,0,0,0.05);
+        background: linear-gradient(to right, color-mix(in srgb, var(--bg-card) 95%, transparent), var(--bg-card));
+    }
+
+    .nav-btn {
+        border-radius: 0 20px 20px 0 !important;
+        margin-right: -1rem;
+        padding-right: 1.5rem !important;
+        border-right: 3px solid transparent;
+        font-family: Tajawal, sans-serif;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+    .nav-btn:hover, .nav-btn.active {
+        border-right-color: var(--accent);
+        background: linear-gradient(to left, color-mix(in srgb, var(--accent) 10%, transparent), transparent);
+    }
+
+    /* Add ornate top border to main cards on desktop */
+    .classic-card, #quran-reader-container {
+        border-top: 3px solid var(--accent) !important;
+        position: relative;
+    }
+    .classic-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 15px; right: 15px; height: 1px;
+        background: var(--accent); opacity: 0.3;
+    }
+
+    /* Elegant Title Styling */
+    .title-ornament {
+        position: relative;
+        display: inline-block;
+        padding: 0 40px;
+    }
+    .title-ornament::before, .title-ornament::after {
+        content: '❈';
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--accent);
+        font-size: 0.8em;
+        opacity: 0.8;
+    }
+    .title-ornament::before { right: 0; }
+    .title-ornament::after { left: 0; }
+}
+
+/* Kunnash (Notepad) Arabic Styling */
+#kunnash-input {
+    background-image: repeating-linear-gradient(transparent, transparent 31px, color-mix(in srgb, var(--border) 50%, transparent) 31px, color-mix(in srgb, var(--border) 50%, transparent) 32px);
+    line-height: 32px;
+    padding-top: 6px;
+}
+</style>
+
+
+<style id="andalusian-theme-patch">
+/* Andalusian Kunnash (Notepad) Styling */
+.andalusian-kunnash-card {
+    background: #FCF9F2 url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.04"/></svg>') !important;
+    border: 1px solid #c8a97e !important;
+    position: relative;
+    padding: 25px 20px 20px 20px !important;
+    border-radius: 12px !important;
+    box-shadow: 0 15px 35px rgba(139, 90, 43, 0.08), inset 0 0 60px rgba(139, 90, 43, 0.04) !important;
+    overflow: hidden;
+}
+
+/* Double Border Effect for Andalusian Vibe */
+.andalusian-kunnash-card::before {
+    content: '';
+    position: absolute;
+    top: 6px; bottom: 6px; left: 6px; right: 6px;
+    border: 1px solid rgba(139, 90, 43, 0.3);
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+/* Corner Ornaments */
+.andalusian-ornament-tl, .andalusian-ornament-tr, 
+.andalusian-ornament-bl, .andalusian-ornament-br {
+    position: absolute;
+    width: 30px; height: 30px;
+    border: 2px solid #8b5a2b;
+    opacity: 0.4;
+    pointer-events: none;
+}
+.andalusian-ornament-tl { top: 10px; left: 10px; border-bottom: none; border-right: none; border-top-left-radius: 8px;}
+.andalusian-ornament-tr { top: 10px; right: 10px; border-bottom: none; border-left: none; border-top-right-radius: 8px;}
+.andalusian-ornament-bl { bottom: 10px; left: 10px; border-top: none; border-right: none; border-bottom-left-radius: 8px;}
+.andalusian-ornament-br { bottom: 10px; right: 10px; border-top: none; border-left: none; border-bottom-right-radius: 8px;}
+
+/* Textarea Typography & Lines */
+#kunnash-input {
+    background: transparent !important;
+    background-image: repeating-linear-gradient(transparent, transparent 33px, rgba(139, 90, 43, 0.15) 33px, rgba(139, 90, 43, 0.15) 34px) !important;
+    line-height: 34px !important;
+    color: #3e2723 !important; /* Deep ink color */
+    font-size: 1.3rem !important;
+    font-weight: 700;
+    padding: 0 10px !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    resize: none;
+    text-shadow: 0px 1px 1px rgba(255,255,255,0.5);
+    position: relative;
+    z-index: 10;
+}
+#kunnash-input::placeholder {
+    color: rgba(139, 90, 43, 0.5);
+    font-style: italic;
+    font-weight: normal;
+}
+
+/* Header inside Kunnash */
+.kunnash-header {
+    text-align: center;
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 10;
+}
+.kunnash-title {
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #5d4037;
+    letter-spacing: 1px;
+}
+.kunnash-divider {
+    font-size: 1.2rem;
+    color: #8b5a2b;
+    opacity: 0.7;
+    margin: -5px 0 10px 0;
+}
+
+/* Mobile Adjustments for Kunnash */
+@media (max-width: 768px) {
+    .andalusian-kunnash-card {
+        padding: 20px 15px 15px 15px !important;
+        border-radius: 18px !important;
+        margin: 0 2px;
+    }
+    .andalusian-kunnash-card::before {
+        top: 5px; bottom: 5px; left: 5px; right: 5px;
+        border-radius: 14px;
+    }
+    .kunnash-title { font-size: 1.5rem; }
+    #kunnash-input {
+        font-size: 1.15rem !important;
+        line-height: 32px !important;
+        background-image: repeating-linear-gradient(transparent, transparent 31px, rgba(139, 90, 43, 0.15) 31px, rgba(139, 90, 43, 0.15) 32px) !important;
+        height: 200px !important; /* Fixed optimal height for mobile */
+    }
+    .andalusian-ornament-tl, .andalusian-ornament-tr, 
+    .andalusian-ornament-bl, .andalusian-ornament-br {
+        width: 20px; height: 20px;
+    }
+}
+</style>
+
+
+<style id="ayah-quran-patch">
+/* Quran Reading like Ayah App */
+.quran-page-container {
+    background-color: #FDFBF7 !important; /* Authentic cream paper color */
+    color: #111 !important;
+    border-radius: 12px;
+    padding: 40px 50px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.05), inset 0 0 100px rgba(230,220,200,0.2) !important;
+    max-width: 850px;
+    margin: 0 auto;
+    position: relative;
+    border: 1px solid rgba(200, 180, 150, 0.3);
+}
+
+.quran-text {
+    font-family: 'Amiri Quran', 'Amiri', serif !important;
+    font-size: 32px !important;
+    line-height: 2.3 !important;
+    text-align: justify;
+    text-align-last: center;
+    direction: rtl;
+    text-shadow: 0.5px 0.5px 0px rgba(0,0,0,0.1);
+}
+
+.ayah-end {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%23c8a97e" d="M50 0 L58 35 L95 20 L70 50 L95 80 L58 65 L50 100 L42 65 L5 80 L30 50 L5 20 L42 35 Z" opacity="0.15"/><circle cx="50" cy="50" r="38" fill="none" stroke="%238b5a2b" stroke-width="2"/><circle cx="50" cy="50" r="32" fill="none" stroke="%23c8a97e" stroke-width="1" stroke-dasharray="4"/></svg>') no-repeat center center;
+    background-size: contain;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #8b5a2b;
+    margin: 0 8px;
+    transform: translateY(-4px);
+}
+
+.surah-header-ayah {
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+    padding: 15px;
+    background: url('data:image/svg+xml;utf8,<svg width="100" height="40" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg"><path d="M0 20 Q 25 0, 50 20 T 100 20" fill="none" stroke="%23c8a97e" stroke-width="1.5"/></svg>') center center;
+    background-size: 100% 100%;
+}
+.surah-header-ayah h3 {
+    font-family: 'Amiri', serif;
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #8b5a2b;
+    background: #FDFBF7;
+    display: inline-block;
+    padding: 0 20px;
+}
+
+.bismillah-ayah {
+    font-family: 'Amiri Quran', serif;
+    font-size: 28px;
+    text-align: center;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .quran-page-container {
+        padding: 20px 15px;
+        border-radius: 0;
+        box-shadow: none !important;
+        border: none;
+    }
+    .quran-text {
+        font-size: 24px !important;
+        line-height: 2.1 !important;
+        text-align: center;
+        text-align-last: center;
+    }
+    .ayah-end {
+        width: 32px; height: 32px; font-size: 12px; margin: 0 4px; transform: translateY(-2px);
+    }
+    .surah-header-ayah h3 { font-size: 1.8rem; }
+}
+
+/* Modern Minimalist Kunnash (Desktop & Mobile) */
+.kunnash-modern-wrapper {
+    max-width: 700px;
+    margin: 0 auto;
+}
+.kunnash-modern-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+.kunnash-modern-card:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.06), 0 0 0 4px color-mix(in srgb, var(--accent) 10%, transparent);
+}
+.kunnash-modern-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 40%, transparent));
+}
+.kunnash-modern-input {
+    width: 100%;
+    min-height: 250px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: 'Cairo', sans-serif;
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: var(--text-main);
+    resize: none;
+}
+.kunnash-modern-input::placeholder { color: var(--text-muted); opacity: 0.6; }
+@media (max-width: 768px) {
+    .kunnash-modern-card { padding: 20px; border-radius: 16px; }
+    .kunnash-modern-input { font-size: 1.1rem; min-height: 180px; }
+}
+
+/* UI Fonts global apply */
+body, button, input, select, .nav-btn, .mobile-bottom-nav span {
+    font-family: 'Tajawal', sans-serif !important;
+}
+h1, h2, h3, h4 {
+    font-family: 'Cairo', sans-serif !important;
+}
+.font-amiri, .quran-text, .hisn-text {
+    font-family: 'Amiri', serif !important;
+}
+
+</style>
+
+
+<style id="smart-beautiful-patch">
+@keyframes fadeInUpScale { 0% { opacity: 0; transform: translateY(15px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+.fade-in-scale { animation: fadeInUpScale 0.3s ease-out forwards; }
+
+/* Tall Kunnash on Mobile */
+@media (max-width: 768px) {
+    .kunnash-modern-input {
+        min-height: 65vh !important;
+        font-size: 1.25rem !important;
+        line-height: 2.2 !important;
+        background-image: repeating-linear-gradient(transparent, transparent 35px, color-mix(in srgb, var(--border) 50%, transparent) 35px, color-mix(in srgb, var(--border) 50%, transparent) 36px) !important;
+    }
+    .kunnash-modern-card { border-radius: 20px !important; padding: 20px !important; border: 1px solid var(--accent) !important; }
+}
+
+/* Horizontal Smart Grid for Desktop */
+@media (min-width: 1024px) {
+    /* Flex dashboard into two columns */
+    #dashboard > .flex.flex-col {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) 380px !important;
+        gap: 30px !important;
+        align-items: start !important;
+    }
+
+    /* The 4 cards become a 2x2 grid in the main column */
+    #dashboard .grid.smart-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 20px !important;
+    }
+
+    .quran-page-container { padding: 40px !important; box-shadow: 0 20px 60px rgba(0,0,0,0.05) !important; }
+}
+</style>
+
+
+<style id="universal-andalusian-bg">
+/* Base Background setup */
+body {
+    background-color: var(--bg-body) !important; 
+    position: relative;
+}
+
+/* 1. The Photographic Andalusian Background (Universally Compatible) */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url('https://images.unsplash.com/photo-1541447237128-f4cac6e38fce?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    /* By making it grayscale and using luminosity/overlay, it adapts to ANY background color */
+    filter: grayscale(100%) contrast(150%);
+    opacity: 0.06; /* Very subtle texture */
+    mix-blend-mode: luminosity;
+    z-index: -2;
+    pointer-events: none;
+}
+
+/* 2. Classic Arabesque Pattern Overlay (Fills empty spaces elegantly) */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url('https://www.transparenttextures.com/patterns/arabesque.png');
+    background-repeat: repeat;
+    opacity: 0.25;
+    z-index: -1;
+    pointer-events: none;
+    /* Soft vignette to focus the center */
+    mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+}
+
+/* Ensure UI cards have a beautiful Glassmorphism effect so the background shines through slightly */
+.classic-card, .kunnash-modern-card, .quran-page-container {
+    background: color-mix(in srgb, var(--bg-card) 85%, transparent) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid color-mix(in srgb, var(--border) 60%, rgba(200,169,126,0.15)) !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05), inset 0 0 0 1px rgba(255,255,255,0.03) !important;
+    transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease !important;
+}
+
+/* Elevate on hover for desktop */
+@media (hover: hover) {
+    .classic-card:hover {
+        transform: translateY(-6px) scale(1.01) !important;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.08), inset 0 0 0 1px var(--accent) !important;
+        border-color: var(--accent) !important;
+    }
+}
+
+/* Keep top layer text fully readable */
+main, header, aside, #dashboard {
+    position: relative;
+    z-index: 10;
+}
+</style>
+
 </head>
 <body class="min-h-screen flex">
 
@@ -245,63 +818,40 @@
     </div>
   </div>
 
-  <div id="focus-modal" class="hidden fixed inset-0 z-[200] flex flex-col items-center justify-center backdrop-blur-xl transition-all duration-500" style="background: radial-gradient(circle at top, rgba(30,41,59,0.85), rgba(15,23,42,0.95));">
-    <div class="text-center w-full max-w-2xl px-6 md:px-8 relative z-10 flex flex-col items-center classic-card rounded-2xl border border-[var(--accent)] border-opacity-20 shadow-2xl py-10" style="background: rgba(15,23,42,0.6)">
+  
+<!-- Khalwa Modal (Andalusian, NO sounds, Fullscreen) -->
+<div id="focus-modal" class="hidden fixed inset-0 z-[300] flex flex-col items-center justify-center transition-all duration-700" style="background: #110B08 url('data:image/svg+xml;utf8,<svg width=\"100\" height=\"100\" viewBox=\"0 0 100 100\" xmlns=\"http://www.w3.org/2000/svg\"><filter id=\"noise\"><feTurbulence type=\"fractalNoise\" baseFrequency=\"0.8\" numOctaves=\"4\" stitchTiles=\"stitch\"/></filter><rect width=\"100\" height=\"100\" filter=\"url(%23noise)\" opacity=\"0.04\"/></svg>');">
+    <div class="relative w-[95%] max-w-3xl h-[80vh] border-2 border-[#c8a97e] flex flex-col items-center justify-center p-8 shadow-[0_0_80px_rgba(200,169,126,0.15)] bg-opacity-80" style="border-radius: 12px; background: rgba(30,20,15,0.9); backdrop-filter: blur(10px);">
+        <!-- Corner Ornaments -->
+        <div class="absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 border-[#c8a97e] opacity-70" style="border-top-left-radius: 20px;"></div>
+        <div class="absolute top-0 right-0 w-16 h-16 border-t-4 border-r-4 border-[#c8a97e] opacity-70" style="border-top-right-radius: 20px;"></div>
+        <div class="absolute bottom-0 left-0 w-16 h-16 border-b-4 border-l-4 border-[#c8a97e] opacity-70" style="border-bottom-left-radius: 20px;"></div>
+        <div class="absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 border-[#c8a97e] opacity-70" style="border-bottom-right-radius: 20px;"></div>
 
-      <h2 class="text-3xl md:text-4xl font-amiri font-bold mb-2 text-[var(--accent)] drop-shadow-md title-ornament">خَلْوَةُ المُتَأَمِّل</h2>
-      <p class="mb-6 opacity-70 text-white font-amiri text-sm md:text-md">"وَمَا النَّصْرُ إِلَّا صَبْرُ سَاعَة"</p>
+        <!-- Fullscreen Button -->
+        <button onclick="toggleKhalwaFullscreen()" class="absolute top-6 left-6 text-[#c8a97e] hover:text-white transition-colors text-3xl z-50 focus:outline-none" title="ملء الشاشة"><i id="khalwa-fs-icon" class="fa-solid fa-expand"></i></button>
 
-      <div id="focus-timer-display" class="text-6xl md:text-8xl font-sans font-bold mb-8 text-white tracking-widest drop-shadow-lg">25:00</div>
+        <h2 class="text-4xl md:text-6xl font-amiri font-bold mt-4 mb-4 text-[#c8a97e] drop-shadow-md title-ornament z-10" style="letter-spacing: 1px;">خَلْوَةُ المُتَأَمِّل</h2>
+        <p class="text-[#e6d5b8] opacity-80 font-amiri text-lg md:text-2xl text-center max-w-2xl leading-relaxed z-10">"فَاعْكِفْ عَلَى شَأْنِكَ وَدَعِ الدُّنْيَا وَرَاءَكَ"</p>
 
-      <div class="flex justify-center gap-3 mb-8 w-full">
-        <button onclick="startFocusTimer(25)" class="px-5 py-2 border border-[var(--accent)] border-opacity-50 text-[var(--accent)] rounded-full font-bold hover:bg-[var(--accent)] hover:text-white transition shadow text-xs md:text-sm">25 دقيقة</button>
-        <button onclick="startFocusTimer(50)" class="px-5 py-2 border border-[var(--accent)] border-opacity-50 text-[var(--accent)] rounded-full font-bold hover:bg-[var(--accent)] hover:text-white transition shadow text-xs md:text-sm">50 دقيقة</button>
-        <button onclick="startFocusTimer(0)" class="px-5 py-2 border border-red-500 border-opacity-50 text-red-400 rounded-full font-bold hover:bg-red-500 hover:text-white transition shadow text-xs md:text-sm" title="إيقاف المؤقت"><i class="fa-solid fa-stop"></i></button>
-      </div>
+        <!-- Elegant Timer -->
+        <div class="relative flex items-center justify-center my-10 z-10 w-64 h-64 md:w-80 md:h-80">
+            <div class="absolute inset-0 rounded-full border-2 border-[#c8a97e] opacity-20 scale-[1.1] animate-pulse"></div>
+            <div class="absolute inset-0 rounded-full border border-[#c8a97e] opacity-10 scale-[1.3]"></div>
+            <div id="focus-timer-display" class="text-7xl md:text-8xl font-amiri font-bold text-[#fdf7ec] tracking-widest leading-none" style="text-shadow: 0 0 30px rgba(200,169,126,0.6);">25:00</div>
+        </div>
 
-      <div class="w-full flex justify-center flex-wrap gap-3 md:gap-5 mb-8">
-        <div class="text-center">
-          <button id="btn-water" onclick="toggleSound('water')" class="focus-btn w-12 h-12 md:w-14 md:h-14 rounded-full bg-white bg-opacity-5 border border-white border-opacity-10 text-white text-lg md:text-xl mb-1 flex items-center justify-center transition-all hover:scale-105 hover:bg-opacity-20">
-            <i class="fa-solid fa-water"></i>
-          </button>
-          <span class="text-[0.65rem] md:text-xs text-white opacity-70 font-bold font-amiri block">نافورة</span>
-          <audio id="audio-water" loop src="https://cdn.freesound.org/previews/398/398661_7586738-lq.mp3"></audio>
+        <!-- Controls (NO SOUNDS) -->
+        <div class="flex flex-wrap justify-center gap-4 w-full z-10 mb-8">
+            <button onclick="startFocusTimer(25)" class="px-6 py-3 border border-[#c8a97e] text-[#c8a97e] rounded-lg font-bold font-amiri text-xl hover:bg-[#c8a97e] hover:text-[#110B08] transition-all shadow-lg">25 دقيقة</button>
+            <button onclick="startFocusTimer(50)" class="px-6 py-3 border border-[#c8a97e] text-[#c8a97e] rounded-lg font-bold font-amiri text-xl hover:bg-[#c8a97e] hover:text-[#110B08] transition-all shadow-lg">50 دقيقة</button>
+            <button onclick="startFocusTimer(0)" class="px-6 py-3 border border-red-800 text-red-500 rounded-lg font-bold font-amiri text-xl hover:bg-red-900 hover:text-white transition-all shadow-lg" title="إيقاف">إيقاف</button>
         </div>
-        <div class="text-center">
-          <button id="btn-ney" onclick="toggleSound('ney')" class="focus-btn w-12 h-12 md:w-14 md:h-14 rounded-full bg-white bg-opacity-5 border border-white border-opacity-10 text-white text-lg md:text-xl mb-1 flex items-center justify-center transition-all hover:scale-105 hover:bg-opacity-20">
-            <i class="fa-solid fa-music"></i>
-          </button>
-          <span class="text-[0.65rem] md:text-xs text-white opacity-70 font-bold font-amiri block">ناي</span>
-          <audio id="audio-ney" loop src="https://ia800108.us.archive.org/30/items/NeyTaqsim/ney.mp3"></audio>
-        </div>
-        <div class="text-center">
-          <button id="btn-fire" onclick="toggleSound('fire')" class="focus-btn w-12 h-12 md:w-14 md:h-14 rounded-full bg-white bg-opacity-5 border border-white border-opacity-10 text-white text-lg md:text-xl mb-1 flex items-center justify-center transition-all hover:scale-105 hover:bg-opacity-20">
-            <i class="fa-solid fa-fire" style="color:#e07b39"></i>
-          </button>
-          <span class="text-[0.65rem] md:text-xs text-white opacity-70 font-bold font-amiri block">نار</span>
-          <audio id="audio-fire" loop src="https://cdn.freesound.org/previews/361/361001_5617042-lq.mp3"></audio>
-        </div>
-        <div class="text-center">
-          <button id="btn-rain" onclick="toggleSound('rain')" class="focus-btn w-12 h-12 md:w-14 md:h-14 rounded-full bg-white bg-opacity-5 border border-white border-opacity-10 text-white text-lg md:text-xl mb-1 flex items-center justify-center transition-all hover:scale-105 hover:bg-opacity-20">
-            <i class="fa-solid fa-cloud-rain" style="color:#5b9bd5"></i>
-          </button>
-          <span class="text-[0.65rem] md:text-xs text-white opacity-70 font-bold font-amiri block">مطر</span>
-          <audio id="audio-rain" loop src="https://cdn.freesound.org/previews/531/531947_11861866-lq.mp3"></audio>
-        </div>
-        <div class="text-center">
-          <button id="btn-muw" onclick="toggleSound('muw')" class="focus-btn w-12 h-12 md:w-14 md:h-14 rounded-full bg-white bg-opacity-5 border border-white border-opacity-10 text-white text-lg md:text-xl mb-1 flex items-center justify-center transition-all hover:scale-105 hover:bg-opacity-20">
-            <i class="fa-solid fa-guitar" style="color:#9b6b3a"></i>
-          </button>
-          <span class="text-[0.65rem] md:text-xs text-white opacity-70 font-bold font-amiri block">موشح</span>
-          <audio id="audio-muw" loop src="https://ia800506.us.archive.org/1/items/ArabicMusicMuwashshah/muwashshah.mp3"></audio>
-        </div>
-      </div>
 
-      <button onclick="exitFocusMode()" class="px-8 py-2 bg-red-900 bg-opacity-40 hover:bg-opacity-80 text-red-200 hover:text-white rounded-full font-bold transition flex items-center gap-2 text-xs md:text-sm border border-red-500 border-opacity-30"><i class="fa-solid fa-arrow-right-from-bracket"></i> قَطْعُ الخَلْوَة</button>
+        <button onclick="exitAndalusianKhalwa()" class="px-8 py-3 bg-[#c8a97e] bg-opacity-10 hover:bg-opacity-20 text-[#c8a97e] border border-[#c8a97e] rounded-lg font-bold transition flex items-center justify-center gap-3 text-xl font-amiri w-full max-w-xs z-10"><i class="fa-solid fa-door-open"></i> الخُرُوجُ مِنَ الخَلْوَة</button>
     </div>
-  </div>
-
-  <aside id="sidebar" class="w-64 classic-card border-l-0 border-y-0 fixed right-0 top-0 bottom-0 z-40 flex flex-col transform translate-x-full md:translate-x-0 transition-transform duration-300">
+</div>
+<aside id="sidebar" class="w-64 classic-card border-l-0 border-y-0 fixed right-0 top-0 bottom-0 z-40 flex flex-col transform translate-x-full md:translate-x-0 transition-transform duration-300">
     <div class="p-6 text-center border-b border-[var(--border)] relative">
       <div class="mb-2"><i class="fa-solid fa-archway text-4xl diwan-logo"></i></div>
       <h1 class="text-2xl md:text-4xl font-bold font-amiri mb-4 relative z-10 diwan-title-anim" style="color: var(--accent); text-shadow: 0 4px 15px rgba(0,0,0,0.2);">دِيوَان الأَنْدَلُس</h1>
@@ -377,20 +927,20 @@
           <p id="quote-display" class="font-amiri text-xl md:text-2xl italic leading-relaxed max-w-3xl mx-auto" style="color: var(--text-muted)">"وَقُل رَّبِّ زِدْنِي عِلْمًا"</p>
         </div>
 
-        <div class="flex md:grid md:grid-cols-4 overflow-x-auto md:overflow-visible gap-4 mb-8 pb-2 md:pb-0 hide-scrollbar snap-x">
-          <div class="classic-card flex-none w-[160px] md:w-auto snap-center md:snap-align-none rounded-lg p-5 text-center border-b-4 hover:-translate-y-1 transition-transform cursor-pointer" onclick="switchSection('tasks')" style="border-bottom-color: var(--accent)">
+        <div class="grid smart-grid gap-4 mb-8">
+          <div class="classic-card  rounded-lg p-5 text-center border-b-4 hover:-translate-y-1 transition-transform cursor-pointer" onclick="switchSection('tasks')" style="border-bottom-color: var(--accent)">
             <h3 class="font-bold text-xs md:text-sm mb-2 text-[var(--text-muted)]"><i class="fa-solid fa-list-check ml-1"></i> إنجاز المهام</h3>
             <div class="text-2xl md:text-4xl font-bold font-amiri text-[var(--accent)] mt-2" id="stat-tasks">0</div>
           </div>
-          <div class="classic-card flex-none w-[160px] md:w-auto snap-center md:snap-align-none rounded-lg p-5 text-center border-b-4 hover:-translate-y-1 transition-transform cursor-pointer" onclick="switchSection('books')" style="border-bottom-color: var(--accent)">
+          <div class="classic-card  rounded-lg p-5 text-center border-b-4 hover:-translate-y-1 transition-transform cursor-pointer" onclick="switchSection('books')" style="border-bottom-color: var(--accent)">
             <h3 class="font-bold text-xs md:text-sm mb-2 text-[var(--text-muted)]"><i class="fa-solid fa-scroll ml-1"></i> الكتب المقروءة</h3>
             <div class="text-2xl md:text-4xl font-bold font-amiri text-[var(--accent)] mt-2" id="stat-books">0</div>
           </div>
-          <div class="classic-card flex-none w-[160px] md:w-auto snap-center md:snap-align-none rounded-lg p-5 text-center border-b-4 hover:-translate-y-1 transition-transform cursor-pointer" onclick="switchSection('habits')" style="border-bottom-color: var(--accent)">
+          <div class="classic-card  rounded-lg p-5 text-center border-b-4 hover:-translate-y-1 transition-transform cursor-pointer" onclick="switchSection('habits')" style="border-bottom-color: var(--accent)">
             <h3 class="font-bold text-xs md:text-sm mb-2 text-[var(--text-muted)]"><i class="fa-solid fa-seedling ml-1"></i> العادات المتأصلة</h3>
             <div class="text-2xl md:text-4xl font-bold font-amiri text-[var(--accent)] mt-2" id="stat-habits">0</div>
           </div>
-          <div class="classic-card flex-none w-[160px] md:w-auto snap-center md:snap-align-none rounded-lg p-5 text-center border-b-4" style="border-bottom-color: var(--accent)">
+          <div class="classic-card  rounded-lg p-5 text-center border-b-4" style="border-bottom-color: var(--accent)">
             <h3 class="font-bold text-xs md:text-sm mb-2 text-[var(--text-muted)]"><i class="fa-solid fa-chart-line ml-1"></i> مستوى الإنجاز</h3>
             <div class="text-2xl md:text-4xl font-bold font-amiri text-[var(--accent)] mt-2" id="stat-progress-text">0%</div>
             <div class="w-full bg-[var(--border)] rounded-full h-1.5 mt-3 overflow-hidden">
@@ -440,38 +990,94 @@
         </div>
       </div>
 
-      <div id="adhkar" class="section max-w-5xl mx-auto">
-        <h2 class="text-4xl font-bold mb-8 title-ornament text-center">حِصْنُ المُسْلِم</h2>
-        <div class="flex flex-wrap justify-center gap-3 mb-8">
-            <button onclick="renderAdhkar('sabah', this)" class="adhkar-btn px-6 py-2 classic-btn rounded font-bold text-md"><i class="fa-solid fa-sun ml-2"></i> الصَّبَاح</button>
-            <button onclick="renderAdhkar('masaa', this)" class="adhkar-btn px-6 py-2 classic-btn-outline rounded font-bold text-md"><i class="fa-solid fa-moon ml-2"></i> المَسَاء</button>
-            <button onclick="renderAdhkar('salah', this)" class="adhkar-btn px-6 py-2 classic-btn-outline rounded font-bold text-md"><i class="fa-solid fa-pray ml-2"></i> بَعْدَ الصَّلَاة</button>
-            <button onclick="renderAdhkar('nawm', this)" class="adhkar-btn px-6 py-2 classic-btn-outline rounded font-bold text-md"><i class="fa-solid fa-bed ml-2"></i> النَّوْم</button>
+      
+<div id="adhkar" class="section max-w-6xl mx-auto">
+    <h2 class="text-3xl md:text-4xl font-bold mb-6 title-ornament text-center">الأذكار وحصن المسلم</h2>
+    <div class="flex justify-center gap-3 mb-6 bg-var(--bg-body) p-2 rounded-full border" style="border-color: var(--border);">
+        <button onclick="switchAdhkarTab('daily')" id="tab-btn-daily" class="tab-btn active px-6 py-3 rounded-full font-bold text-sm">أذكار اليوم</button>
+        <button onclick="switchAdhkarTab('hisn')" id="tab-btn-hisn" class="tab-btn inactive px-6 py-3 rounded-full font-bold text-sm">حصن المسلم</button>
+    </div>
+
+    <!-- Daily Adhkar Tab -->
+    <div id="tab-content-daily">
+        <div class="grid smart-grid mb-8">
+            <button onclick="renderAdhkar('sabah', this)" class="adhkar-btn py-4 classic-btn rounded-2xl font-bold text-md flex flex-col items-center gap-2 shadow-md"><i class="fa-solid fa-sun text-2xl"></i>الصباح</button>
+            <button onclick="renderAdhkar('masaa', this)" class="adhkar-btn py-4 classic-btn-outline rounded-2xl font-bold text-md flex flex-col items-center gap-2"><i class="fa-solid fa-moon text-2xl"></i>المساء</button>
+            <button onclick="renderAdhkar('salah', this)" class="adhkar-btn py-4 classic-btn-outline rounded-2xl font-bold text-md flex flex-col items-center gap-2"><i class="fa-solid fa-pray text-2xl"></i>الصلاة</button>
+            <button onclick="renderAdhkar('nawm', this)" class="adhkar-btn py-4 classic-btn-outline rounded-2xl font-bold text-md flex flex-col items-center gap-2"><i class="fa-solid fa-bed text-2xl"></i>النوم</button>
         </div>
         <div id="adhkar-list" class="space-y-4"></div>
-      </div>
+    </div>
 
-      <div id="quran" class="section max-w-5xl mx-auto">
-        <h2 class="text-4xl font-bold mb-8 title-ornament text-center">المُصْحَفُ الشَّرِيف</h2>
-        <div class="classic-card rounded-lg p-6 mb-6 shadow-md">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6 border-b pb-4" style="border-color: var(--border)">
-                <div class="w-full md:w-1/2 flex gap-2">
-                    <select id="surah-selector" class="classic-input flex-1 px-4 py-2 rounded font-bold text-lg font-amiri" onchange="loadSurah()">
-                        <option value="">اخْتَرْ السُّورَةَ...</option>
-                    </select>
-                </div>
-                <div class="flex gap-2 w-full md:w-auto">
-                    <button onclick="loadSavedWird()" class="flex-1 md:flex-none px-4 py-2 classic-btn-outline rounded font-bold text-sm"><i class="fa-solid fa-rotate-left ml-2"></i>الْعَوْدَة لِلْوِرْد</button>
-                    <button onclick="saveWirdMarker()" class="flex-1 md:flex-none px-4 py-2 classic-btn rounded font-bold text-sm"><i class="fa-solid fa-bookmark ml-2"></i>حِفْظُ المَقَام</button>
+    <!-- Hisn Al Muslim Tab (Grid of Cards) -->
+    <div id="tab-content-hisn" class="hidden">
+        <div class="classic-card rounded-2xl p-3 mb-6 flex items-center gap-3">
+            <i class="fa-solid fa-search text-var(--text-muted) ml-2"></i>
+            <input id="hisn-search" type="text" placeholder="ابحث في أبواب حصن المسلم..." class="w-full bg-transparent border-none outline-none font-amiri text-lg" oninput="renderHisnCategories()">
+        </div>
+        <div id="hisn-categories-grid" class="grid smart-grid"></div>
+    </div>
+</div>
+
+<!-- Hisn Bottom Sheet Modal -->
+<div class="bottom-sheet-overlay" id="hisn-sheet-overlay" onclick="closeHisnSheet()"></div>
+<div class="bottom-sheet" id="hisn-sheet">
+    <div class="bottom-sheet-header">
+        <h3 id="hisn-sheet-title" class="font-bold font-amiri text-2xl" style="color: var(--accent);"></h3>
+        <button onclick="closeHisnSheet()" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="bottom-sheet-body" id="hisn-sheet-content"></div>
+</div>
+
+
+      
+<div id="quran" class="section max-w-6xl mx-auto">
+    <h2 class="text-3xl md:text-4xl font-bold mb-6 title-ornament text-center">القرآن والصوتيات</h2>
+    <div class="flex justify-center gap-3 mb-6 bg-var(--bg-body) p-2 rounded-full border" style="border-color: var(--border);">
+        <button onclick="switchQuranTab('reader')" id="tab-btn-reader" class="tab-btn active px-6 py-3 rounded-full font-bold text-sm">المصحف المقروء</button>
+        <button onclick="switchQuranTab('audio')" id="tab-btn-audio" class="tab-btn inactive px-6 py-3 rounded-full font-bold text-sm">المكتبة الصوتية</button>
+    </div>
+
+    <!-- Quran Reader Tab -->
+    <div id="tab-content-reader">
+        <div class="classic-card rounded-2xl p-5 mb-6 shadow-md">
+            <div class="flex flex-col gap-4 mb-6 border-b pb-4" style="border-color: var(--border);">
+                <select id="surah-selector" class="classic-input w-full px-4 py-3 rounded-xl font-bold text-lg font-amiri text-center" onchange="loadSurah()"></select>
+                <div class="flex gap-3 w-full">
+                    <button onclick="loadSavedWird()" class="flex-1 py-3 classic-btn-outline rounded-xl font-bold text-sm shadow-sm"><i class="fa-solid fa-rotate-left ml-2"></i>متابعة الورد</button>
+                    <button onclick="saveWirdMarker()" class="flex-1 py-3 classic-btn rounded-xl font-bold text-sm shadow-sm"><i class="fa-solid fa-bookmark ml-2"></i>حفظ العلامة</button>
                 </div>
             </div>
-            <div id="quran-reader-container" class="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 md:p-10 min-h-[500px] overflow-y-auto relative" style="box-shadow: inset 0 0 30px rgba(0,0,0,0.03);">
-                <div class="text-center opacity-50 pt-20">
-                    <i class="fa-solid fa-book-open-reader text-6xl mb-4" style="color: var(--accent)"></i>
-                    <p class="font-amiri text-xl">الرَّجَاءُ اخْتِيَارُ سُورَةٍ لِلْقِرَاءَة</p>
+            <div id="quran-reader-container" class="bg-var(--bg-card) border border-var(--border) rounded-2xl p-4 md:p-10 min-h-[550px] overflow-y-auto relative" style="box-shadow: inset 0 0 30px rgba(0,0,0,0.03);">
+                <div class="text-center opacity-50 pt-24">
+                    <i class="fa-solid fa-book-open-reader text-6xl mb-4" style="color: var(--accent);"></i>
+                    <p class="font-amiri text-xl font-bold mt-4">اختر سورة للبدء في التلاوة</p>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Quran Audio Tab -->
+    <div id="tab-content-audio" class="hidden">
+        <h3 class="font-bold font-amiri text-xl mb-3 text-var(--text-muted)">استماع سريع (أشهر القراء)</h3>
+        <div class="horizontal-scroll" id="quick-reciters-scroll">
+            <!-- Populated via JS -->
+        </div>
+
+        <div class="classic-card rounded-2xl p-6 shadow-md mt-6 border-t-4" style="border-top-color: var(--accent);">
+            <h3 class="font-bold font-amiri text-2xl mb-6 text-center text-var(--accent)">البحث المتقدم والمشغل</h3>
+            <div class="flex flex-col gap-4 mb-6">
+                <select id="audio-reciter-select" class="classic-input w-full p-3 rounded-xl font-bold text-lg font-amiri" onchange="playGlobalAudio()"></select>
+                <select id="audio-surah-select" class="classic-input w-full p-3 rounded-xl font-bold text-lg font-amiri" onchange="playGlobalAudio()"></select>
+            </div>
+            <div class="bg-var(--bg-body) p-5 rounded-2xl text-center border border-var(--border) shadow-inner">
+                <div id="audio-now-playing" class="font-bold font-amiri text-xl mb-4 text-var(--accent)">اختر سورة للقراءة</div>
+                <audio id="global-audio-player" controls class="w-full outline-none rounded-full" style="height: 48px;"></audio>
+            </div>
+        </div>
+    </div>
+</div>
+
       </div>
 
       <div id="audio" class="section max-w-4xl mx-auto">
@@ -544,7 +1150,7 @@
         </div>
       </div>
 
-      <div id="literature" class="section max-w-5xl mx-auto">
+      <div id="literature" class="section max-w-6xl mx-auto">
         <h2 class="text-4xl font-bold mb-8 title-ornament text-center">مَجْلِسُ الأَدَبِ وَالشِّعْر</h2>
         <div class="classic-card rounded-lg p-6 mb-8 relative shadow-md">
             <div class="flex flex-col md:flex-row justify-between items-center mb-8 border-b pb-4 gap-4" style="border-color: var(--border)">
@@ -781,13 +1387,7 @@
         {id: 5, author: "المُتَنَبِّي", book: "دِيوَانُ المُتَنَبِّي", text: "الخَيْلُ وَاللّيلُ وَالبَيْداءُ تَعرِفُني\nوَالسّيفُ وَالرّمحُ والقرْطاسُ وَالقَلَمُ\nصَحِبْتُ في الفَلَواتِ الوَحشَ منفَرِداً\nحتى تَعَجّبَ مني القُورُ وَالأكَمُ"}
     ];
 
-    const initialBooks = [
-        {id: 1, category: "تُرَاثٌ وَأَدَب", title: "طَوْقُ الحَمَامَةِ فِي الأُلْفَةِ وَالأُلَّاف", author: "ابْنُ حَزْمٍ الأَنْدَلُسِي", desc: "كِتَابٌ عَظِيمٌ يُعَالِجُ مَوْضُوعَ الحُبِّ وَعَوَاطِفِ النَّفْسِ مِنْ عُمُقِ المُجْتَمَعِ الأَنْدَلُسِي."},
-        {id: 2, category: "تَارِيخٌ وَعُمْرَان", title: "مُقَدِّمَةُ ابْنِ خَلْدُون", author: "ابْنُ خَلْدُون", desc: "أَسَاسُ عِلْمِ الِاجْتِمَاعِ، يَشْرَحُ قَوَانِينَ صُعُودِ وَهُبُوطِ الأُمَمِ وَالحَضَارَات."},
-        {id: 3, category: "فَلْسَفَةٌ وَتَأَمُّل", title: "حَيُّ بْنُ يَقْظَان", author: "ابْنُ طُفَيْل", desc: "قِصَّةٌ فَلْسَفِيَّةٌ عَمِيقَةٌ تُصَوِّرُ تَأَمُّلَ الإِنْسَانِ فِي الطَّبِيعَةِ وَوُصُولَهُ لِلْخَالِق."},
-        {id: 4, category: "تَارِيخٌ وَأَدَب", title: "نَفْحُ الطِّيبِ مِنْ غُصْنِ الأَنْدَلُسِ الرَّطِيب", author: "المَقَّرِي التِّلِمْسَانِي", desc: "مَوْسُوعَةٌ تَارِيخِيَّةٌ وَأَدَبِيَّةٌ هَامَّةٌ عَنْ تَارِيخِ الأَنْدَلُسِ وَرِجَالَاتِهَا."},
-        {id: 5, category: "أَدَبٌ وَبَلَاغَة", title: "البَيَانُ وَالتَّبْيِين", author: "الجَاحِظ", desc: "مِنْ أُمَّهَاتِ كُتُبِ الأَدَبِ العَرَبِيّ، يُعْنَى بِالبَلَاغَةِ وَالخَطَابَةِ وَالفَصَاحَة."}
-    ];
+    const initialBooks = [];
 
     function checkAuth() {
         const saved = localStorage.getItem('diwanData');
@@ -2011,14 +2611,25 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-<div class="mobile-bottom-nav">
-    <button onclick="switchSection('dashboard')" id="nav-mobile-dashboard" class="active"><i class="fa-solid fa-house"></i><span>الرئيسية</span></button>
-    <button onclick="switchSection('adhkar')" id="nav-mobile-adhkar"><i class="fa-solid fa-hands-praying"></i><span>الأذكار</span></button>
-    <button onclick="switchSection('quran')" id="nav-mobile-quran"><i class="fa-solid fa-book-open-reader"></i><span>المصحف</span></button>
-    <button onclick="switchSection('audio')" id="nav-mobile-audio"><i class="fa-solid fa-headphones"></i><span>استماع</span></button>
-    <button onclick="switchSection('books')" id="nav-mobile-books"><i class="fa-solid fa-book-open"></i><span>المكتبة</span></button>
-    <button onclick="switchSection('diwanLibrary')" id="nav-mobile-diwanLibrary"><i class="fa-solid fa-feather"></i><span>الديوان</span></button>
+
+<div class="mobile-bottom-nav md:hidden">
+    <button class="active" onclick="switchSection('dashboard')" id="nav-mobile-dashboard">
+        <i class="fa-solid fa-house"></i><span>الرئيسية</span>
+    </button>
+    <button onclick="switchSection('quran')" id="nav-mobile-quran">
+        <i class="fa-solid fa-book-quran"></i><span>قرآن وصوت</span>
+    </button>
+    <button onclick="switchSection('adhkar')" id="nav-mobile-adhkar">
+        <i class="fa-solid fa-hands-praying"></i><span>أذكار وحصن</span>
+    </button>
+    <button onclick="switchSection('books')" id="nav-mobile-books">
+        <i class="fa-solid fa-scroll"></i><span>الكتب</span>
+    </button>
+    <button onclick="openSidebar()" id="nav-mobile-menu">
+        <i class="fa-solid fa-bars-staggered"></i><span>المزيد</span>
+    </button>
 </div>
+
 
 
 <script>
@@ -2339,6 +2950,585 @@ setTimeout(() => {
     if(t) t.innerText = v.text;
     if(a) a.innerText = "- " + v.author;
 }, 500);
+</script>
+
+
+<script id="mobile-ultimate-js">
+(function(){
+  // --- Auto Login & Clean default books ---
+
+// Purge default books (My Library) on load
+try {
+    if (typeof appData !== 'undefined' && appData.books) {
+        // IDs 1 to 5 were the default books. We filter them out.
+        appData.books = appData.books.filter(b => b.id > 10 || typeof b.id === 'string');
+        saveData(true);
+    }
+} catch(e) {}
+
+// Function to re-trigger animations when tabs are switched
+function retriggerAnimations(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const elements = container.querySelectorAll('.classic-card, .hisn-item, .hisn-card, .adhkar-btn');
+    elements.forEach(el => {
+        el.style.animation = 'none';
+        el.offsetHeight; /* trigger reflow */
+        el.style.animation = null; 
+    });
+}
+
+  function mobileAutoEntry(){
+    if(window.innerWidth > 768 || window.__mobileEntered) return false;
+    try {
+      const saved = localStorage.getItem('diwanData') || localStorage.getItem('diwanDataBackup');
+      if(saved && typeof appData !== 'undefined') {
+        const parsed = JSON.parse(saved);
+        if(parsed && typeof parsed === 'object') appData = {...appData, ...parsed};
+      }
+      appData.isLoggedIn = true; appData.initialized = true;
+      if(!appData.userName) appData.userName = 'ضيف الديوان';
+
+      // Prevent old default books from polluting the library if they were marked "مكتبتي" by initialBooks
+      if(appData.books && appData.books.length > 0) {
+          appData.books = appData.books.filter(b => b.id > 10); // user added books get Date.now() ID, initial had 1-5
+      }
+
+      const s = document.getElementById('auth-screen');
+      if(s){ s.classList.add('hidden'); s.style.display='none'; }
+      window.__mobileEntered = true;
+      if(typeof init === 'function') init();
+      return true;
+    } catch(e) { return false; }
+  }
+
+  const oldOnload = window.onload;
+  window.onload = function(e){
+    if(mobileAutoEntry()) return;
+    if(typeof oldOnload === 'function') oldOnload(e);
+  };
+
+  // --- Robust Saving ---
+  window.saveData = function(force=false){
+    try {
+      if(typeof appData !== 'undefined'){
+        appData.lastSavedAt = Date.now();
+        const p = JSON.stringify(appData);
+        localStorage.setItem('diwanData', p);
+        localStorage.setItem('diwanDataBackup', p);
+      }
+    }catch(e){}
+    if(typeof updateDashboardStats === 'function') updateDashboardStats();
+  };
+  document.addEventListener('visibilitychange', () => { if(document.visibilityState==='hidden') saveData(true); });
+  window.addEventListener('pagehide', () => saveData(true));
+  setInterval(() => saveData(true), 15000);
+
+  // --- Adhkar & Hisn Tabs ---
+  window.switchAdhkarTab = function(tab){
+    const dBtn = document.getElementById('tab-btn-daily');
+    const hBtn = document.getElementById('tab-btn-hisn');
+    const dTab = document.getElementById('tab-content-daily');
+    const hTab = document.getElementById('tab-content-hisn');
+
+    if(tab === 'daily'){
+      dBtn.className = 'tab-btn active px-6 py-3 rounded-full font-bold text-sm';
+      hBtn.className = 'tab-btn inactive px-6 py-3 rounded-full font-bold text-sm';
+      dTab.classList.remove('hidden'); hTab.classList.add('hidden');
+      setTimeout(() => retriggerAnimations('tab-content-daily'), 50);
+    } else {
+      hBtn.className = 'tab-btn active px-6 py-3 rounded-full font-bold text-sm';
+      dBtn.className = 'tab-btn inactive px-6 py-3 rounded-full font-bold text-sm';
+      hTab.classList.remove('hidden'); dTab.classList.add('hidden');
+      loadAndRenderHisn();
+      setTimeout(() => retriggerAnimations('tab-content-hisn'), 50);
+    }
+  };
+
+  // --- Hisn Al Muslim App-like Logic ---
+  window.HISN_DATA = [];
+  window.loadAndRenderHisn = async function(){
+    if(window._hisnLoaded) { renderHisnCategories(); return; }
+    try {
+      const r = await fetch('https://cdn.jsdelivr.net/gh/rn0x/hisn_almuslim_json@main/hisn_almuslim.json');
+      const data = await r.json();
+      let items = [];
+      if(Array.isArray(data)){
+        items = data.map((x,i) => ({id:i+1, title: x.title||x.category||'قسم '+(i+1), content:x}));
+      } else if(typeof data === 'object') {
+        Object.keys(data).forEach((k,i) => items.push({id:i+1, title:k, content:data[k]}));
+      }
+      window.HISN_DATA = items;
+      window._hisnLoaded = true;
+      renderHisnCategories();
+    } catch(e) {
+      document.getElementById('hisn-categories-grid').innerHTML = '<div class="classic-card w-full text-center text-red-500 font-bold p-6">تعذر جلب البيانات، تأكد من اتصالك بالإنترنت.</div>';
+    }
+  };
+
+  window.renderHisnCategories = function(){
+    const q = (document.getElementById('hisn-search')?.value||'').trim();
+    const container = document.getElementById('hisn-categories-grid');
+    if(!container) return;
+
+    let filtered = window.HISN_DATA.filter(item => !q || item.title.includes(q) || JSON.stringify(item).includes(q));
+
+    if(!filtered.length) {
+      container.innerHTML = '<div class="classic-card w-full col-span-full text-center opacity-60 p-8 font-amiri">لا توجد نتائج.</div>';
+      return;
+    }
+
+    let html = '';
+    filtered.forEach((section, idx) => {
+      let count = Array.isArray(section.content) ? section.content.length : 1;
+      if(section.content && section.content.array) count = section.content.array.length;
+
+      html += `
+        <div onclick="openHisnCategory(${section.id})" class="classic-card rounded-2xl p-5 cursor-pointer hover:scale-105 transition-transform shadow-sm flex flex-col justify-between" style="border-right: 4px solid var(--accent)">
+            <h3 class="font-bold font-amiri text-xl mb-3 leading-snug" style="color: var(--accent);">${section.title}</h3>
+            <div class="text-xs font-bold text-var(--text-muted) bg-var(--bg-body) self-start px-3 py-1 rounded-lg border">يحتوي على ${count} ذكر</div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  };
+
+  window.openHisnCategory = function(id){
+    const section = window.HISN_DATA.find(x => x.id === id);
+    if(!section) return;
+
+    document.getElementById('hisn-sheet-title').textContent = section.title;
+    const body = document.getElementById('hisn-sheet-content');
+
+    let contents = Array.isArray(section.content) ? section.content : [section.content];
+    if(section.content && section.content.array) contents = section.content.array;
+
+    let html = '';
+    contents.forEach(item => {
+      let textStr = typeof item === 'string' ? item : (item.text || item.content || JSON.stringify(item));
+      let count = item.count ? `<div class="hisn-count"><i class="fa-solid fa-rotate-right ml-1"></i> التكرار: ${item.count}</div>` : '';
+      html += `<div class="hisn-item"><div class="hisn-text">${textStr}</div>${count}</div>`;
+    });
+
+    body.innerHTML = html;
+    document.getElementById('hisn-sheet-overlay').classList.add('open');
+    document.getElementById('hisn-sheet').classList.add('open');
+  };
+
+  window.closeHisnSheet = function(){
+    document.getElementById('hisn-sheet-overlay').classList.remove('open');
+    document.getElementById('hisn-sheet').classList.remove('open');
+  };
+
+  // --- Quran & Audio Tabs ---
+  window.switchQuranTab = function(tab){
+    const rBtn = document.getElementById('tab-btn-reader');
+    const aBtn = document.getElementById('tab-btn-audio');
+    const rTab = document.getElementById('tab-content-reader');
+    const aTab = document.getElementById('tab-content-audio');
+
+    if(tab === 'reader'){
+      rBtn.className = 'tab-btn active px-6 py-3 rounded-full font-bold text-sm';
+      aBtn.className = 'tab-btn inactive px-6 py-3 rounded-full font-bold text-sm';
+      rTab.classList.remove('hidden'); aTab.classList.add('hidden');
+    } else {
+      aBtn.className = 'tab-btn active px-6 py-3 rounded-full font-bold text-sm';
+      rBtn.className = 'tab-btn inactive px-6 py-3 rounded-full font-bold text-sm';
+      aTab.classList.remove('hidden'); rTab.classList.add('hidden');
+      initAudioSelectors();
+    }
+  };
+
+  const RECITERS = [
+    { id: 'husr', name: 'محمود خليل الحصري', url: 'https://server13.mp3quran.net/husr/' },
+    { id: 'minsh', name: 'محمد صديق المنشاوي', url: 'https://server10.mp3quran.net/minsh/' },
+    { id: 'basit', name: 'عبدالباسط عبدالصمد', url: 'https://server7.mp3quran.net/basit/' },
+    { id: 'afs', name: 'مشاري راشد العفاسي', url: 'https://server8.mp3quran.net/afs/' },
+    { id: 'maher', name: 'ماهر المعيقلي', url: 'https://server12.mp3quran.net/maher/' },
+    { id: 'yasser', name: 'ياسر الدوسري', url: 'https://server11.mp3quran.net/yasser/' },
+    { id: 'sds', name: 'عبدالرحمن السديس', url: 'https://server11.mp3quran.net/sds/' },
+    { id: 'shur', name: 'سعود الشريم', url: 'https://server7.mp3quran.net/shur/' },
+    { id: 's_gmd', name: 'سعد الغامدي', url: 'https://server7.mp3quran.net/s_gmd/' },
+    { id: 'qtm', name: 'ناصر القطامي', url: 'https://server6.mp3quran.net/qtm/' },
+    { id: 'ayyoub', name: 'محمد أيوب', url: 'https://server8.mp3quran.net/ayyoub/' }
+  ];
+
+  window.initAudioSelectors = function(){
+    if(window._audioInit) return;
+    const rSel = document.getElementById('audio-reciter-select');
+    const sSel = document.getElementById('audio-surah-select');
+    const qScroll = document.getElementById('quick-reciters-scroll');
+    if(!rSel || !sSel) return;
+
+    rSel.innerHTML = '<option value="">-- اختر القارئ --</option>' + RECITERS.map(r => `<option value="${r.url}">${r.name}</option>`).join('');
+    if(typeof surahs !== 'undefined'){
+      sSel.innerHTML = '<option value="">-- اختر السورة --</option>' + surahs.map((s, i) => `<option value="${(i+1).toString().padStart(3,'0')}">${i+1}. ${s}</option>`).join('');
+    }
+
+    // Quick Reciters Horizontal Scroll
+    if(qScroll) {
+      qScroll.innerHTML = RECITERS.slice(0, 6).map((r, idx) => `
+        <div onclick="quickPlay('${r.url}', '${r.name}')" class="classic-card rounded-3xl p-5 text-center cursor-pointer shadow-md bg-opacity-70 flex flex-col items-center justify-center border-t-4" style="border-top-color: var(--accent);">
+            <div class="w-16 h-16 rounded-full bg-var(--bg-body) border border-var(--accent) flex items-center justify-center mb-3">
+                <i class="fa-solid fa-microphone-lines text-2xl" style="color: var(--accent);"></i>
+            </div>
+            <h4 class="font-bold font-amiri text-lg">${r.name}</h4>
+        </div>
+      `).join('');
+    }
+    window._audioInit = true;
+  };
+
+  window.quickPlay = function(url, name) {
+    document.getElementById('audio-reciter-select').value = url;
+    const sSel = document.getElementById('audio-surah-select');
+    if(!sSel.value) sSel.value = "001"; // Fatiha by default
+    playGlobalAudio();
+  };
+
+  window.playGlobalAudio = function(){
+    const rUrl = document.getElementById('audio-reciter-select').value;
+    const sNum = document.getElementById('audio-surah-select').value;
+    const player = document.getElementById('global-audio-player');
+    const display = document.getElementById('audio-now-playing');
+    if(!rUrl || !sNum) return;
+
+    const reciterName = document.getElementById('audio-reciter-select').options[document.getElementById('audio-reciter-select').selectedIndex].text;
+    const surahName = typeof surahs !== 'undefined' ? surahs[parseInt(sNum)-1] : sNum;
+    display.innerHTML = `تلاوة سورة <span class="text-var--accent">${surahName}</span> بصوت <span class="text-var--accent">${reciterName}</span>`;
+
+    player.src = rUrl + sNum + '.mp3';
+    player.play().catch(e=>console.log(e));
+  };
+
+  // Nav Switch Sync
+  const oldSwitch = window.switchSection;
+  window.switchSection = function(id){
+    if(typeof oldSwitch === 'function') oldSwitch(id);
+    document.querySelectorAll('.mobile-bottom-nav button').forEach(b => b.classList.remove('active'));
+    const a = document.getElementById('nav-mobile-'+id);
+    if(a) a.classList.add('active');
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    mobileAutoEntry();
+    try {
+      if(typeof HBDATA !== 'undefined' && Array.isArray(HBDATA) && !window.__hbFixed){
+        HBDATA.splice(0,5); window.__hbFixed = true;
+        if(typeof hbFilter === 'function') hbFilter();
+      }
+    } catch(e){}
+
+    // Hide old sidebar audio button
+    const aBtn = document.querySelector('button[onclick="switchSection(\'audio\')"]');
+    if(aBtn) aBtn.style.display = 'none';
+  });
+})();
+</script>
+
+
+<script id="prayer-location-patch">
+(function(){
+    window.toggleLocationEdit = function() {
+        const box = document.getElementById('location-edit-box');
+        if(box.classList.contains('hidden')) {
+            box.classList.remove('hidden');
+            box.classList.add('flex');
+
+            // Populate inputs if manual exists
+            const savedLoc = localStorage.getItem('diwan_manual_location');
+            if(savedLoc) {
+                const parsed = JSON.parse(savedLoc);
+                document.getElementById('manual-city-input').value = parsed.city || '';
+                document.getElementById('manual-country-input').value = parsed.country || '';
+            }
+        } else {
+            box.classList.add('hidden');
+            box.classList.remove('flex');
+        }
+    };
+
+    window.saveManualLocation = function() {
+        const city = document.getElementById('manual-city-input').value.trim();
+        const country = document.getElementById('manual-country-input').value.trim();
+
+        if(!city) {
+            alert('يرجى إدخال اسم المدينة على الأقل (يفضل بالإنجليزية لضمان دقة البحث)');
+            return;
+        }
+
+        localStorage.setItem('diwan_manual_location', JSON.stringify({city, country}));
+        toggleLocationEdit();
+        fetchPrayerTimesWithManual();
+    };
+
+    window.clearManualLocation = function() {
+        localStorage.removeItem('diwan_manual_location');
+        document.getElementById('manual-city-input').value = '';
+        document.getElementById('manual-country-input').value = '';
+        toggleLocationEdit();
+        fetchPrayerTimesWithManual();
+    };
+
+    // Overwrite the original fetchPrayerTimes to inject manual logic
+    window.fetchPrayerTimesWithManual = async function() {
+        let city = "Mecca", country = "Saudi Arabia";
+
+        const manualLoc = localStorage.getItem('diwan_manual_location');
+        if(manualLoc) {
+            try {
+                const parsed = JSON.parse(manualLoc);
+                city = parsed.city || city;
+                country = parsed.country || country;
+            } catch(e){}
+        } else {
+            try {
+                const locationRes = await fetch('https://ipapi.co/json/');
+                if(locationRes.ok) {
+                    const locationData = await locationRes.json();
+                    city = locationData.city || city;
+                    country = locationData.country_name || country;
+                }
+            } catch(e) { console.log('Auto location failed, using defaults.'); }
+        }
+
+        document.getElementById('prayer-city').innerHTML = `<i class="fa-solid fa-location-dot ml-1"></i> (${city}, ${country})`;
+
+        try {
+            const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}&method=4`);
+            if(!res.ok) throw new Error('API failed');
+            const data = await res.json();
+            const timings = data.data.timings;
+
+            document.getElementById('pt-fajr').textContent = timings.Fajr;
+            document.getElementById('pt-sunrise').textContent = timings.Sunrise;
+            document.getElementById('pt-dhuhr').textContent = timings.Dhuhr;
+            document.getElementById('pt-asr').textContent = timings.Asr;
+            document.getElementById('pt-maghrib').textContent = timings.Maghrib;
+            document.getElementById('pt-isha').textContent = timings.Isha;
+        } catch(err) {
+            document.getElementById('prayer-city').textContent = "تعذر جلب المواقيت - تحقق من اسم المدينة";
+        }
+    };
+
+    // Override the interval or original call if possible.
+    document.addEventListener('DOMContentLoaded', () => {
+        // Delay a bit to let original init run, then overwrite
+        setTimeout(fetchPrayerTimesWithManual, 1000);
+    });
+})();
+</script>
+
+
+
+<script id="quran-pagination-patch">
+(function(){
+    window.quranState = {
+        verses: [], surahName: '', surahId: 0, currentPage: 0, perPage: 15
+    };
+
+    window.displaySurah = function(surah) {
+        window.quranState.verses = surah.verses || surah.ayahs || surah.array || surah;
+        window.quranState.surahName = surah.name;
+        window.quranState.surahId = surah.id;
+        window.quranState.currentPage = 0;
+
+        let totalChars = JSON.stringify(window.quranState.verses).length;
+        window.quranState.perPage = totalChars > 4000 ? 12 : 18; 
+        renderQuranPage();
+    };
+
+    window.renderQuranPage = function() {
+        const container = document.getElementById('quran-reader-container');
+        if(!container) return;
+
+        const totalPages = Math.ceil(window.quranState.verses.length / window.quranState.perPage);
+        const startIdx = window.quranState.currentPage * window.quranState.perPage;
+        const endIdx = startIdx + window.quranState.perPage;
+        const pageVerses = window.quranState.verses.slice(startIdx, endIdx);
+
+        let htmlStr = '<div class="quran-page-container fade-in-scale">';
+
+        if (window.quranState.currentPage === 0) {
+            htmlStr += '<div class="surah-header-ayah"><h3>سُورَةُ ' + window.quranState.surahName + '</h3></div>';
+            if (window.quranState.surahId !== 1 && window.quranState.surahId !== 9) {
+                htmlStr += '<div class="bismillah-ayah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>';
+            }
+        }
+
+        htmlStr += '<div class="quran-text" dir="rtl">';
+        pageVerses.forEach((verse, idx) => {
+            const actualAyahNum = startIdx + idx + 1;
+            let text = typeof verse === 'string' ? verse : (verse.text || verse.content || '');
+            const arabicNum = actualAyahNum.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+            htmlStr += '<span class="ayah-word">' + text + '</span><span class="ayah-end">' + arabicNum + '</span> ';
+        });
+        htmlStr += '</div></div>';
+
+        const isFirst = window.quranState.currentPage === 0;
+        const isLast = window.quranState.currentPage >= totalPages - 1;
+
+        htmlStr += '<div class="flex justify-between items-center mt-8 bg-[var(--bg-body)] p-3 md:p-4 rounded-2xl border border-[var(--border)] shadow-md fade-in-scale font-amiri">';
+        htmlStr += '<button onclick="changeQuranPage(1)" class="px-6 py-2 classic-btn rounded-xl font-bold transition-all text-lg ' + (isLast ? 'opacity-40 cursor-not-allowed' : 'hover:scale-105') + '" ' + (isLast ? 'disabled' : '') + '><i class="fa-solid fa-chevron-right ml-2"></i>التالي</button>';
+        htmlStr += '<div class="text-center font-bold text-xl text-[var(--accent)]">الصحيفة ' + (window.quranState.currentPage + 1) + ' / ' + totalPages + '</div>';
+        htmlStr += '<button onclick="changeQuranPage(-1)" class="px-6 py-2 classic-btn rounded-xl font-bold transition-all text-lg ' + (isFirst ? 'opacity-40 cursor-not-allowed' : 'hover:scale-105') + '" ' + (isFirst ? 'disabled' : '') + '>السابق<i class="fa-solid fa-chevron-left mr-2"></i></button>';
+        htmlStr += '</div>';
+
+        container.innerHTML = htmlStr;
+        container.scrollTop = 0;
+    };
+
+    window.changeQuranPage = function(dir) {
+        const totalPages = Math.ceil(window.quranState.verses.length / window.quranState.perPage);
+        const newPage = window.quranState.currentPage + dir;
+        if(newPage >= 0 && newPage < totalPages) {
+            window.quranState.currentPage = newPage;
+            renderQuranPage();
+        }
+    };
+})();
+</script>
+
+
+
+<script id="location-fetcher-patch">
+(function(){
+    let globalCountriesData = {};
+
+    window.toggleLocationEdit = async function() {
+        const box = document.getElementById('location-edit-box');
+        if(box.classList.contains('hidden')) {
+            box.classList.remove('hidden');
+            box.classList.add('flex');
+
+            const countrySelect = document.getElementById('manual-country-input');
+
+            // Fetch comprehensive countries/cities JSON if not loaded
+            if(Object.keys(globalCountriesData).length === 0) {
+                countrySelect.innerHTML = '<option>جارٍ جلب الدول...</option>';
+                try {
+                    const res = await fetch('https://countriesnow.space/api/v0.1/countries');
+                    const json = await res.json();
+                    if(!json.error) {
+                        json.data.forEach(item => {
+                            globalCountriesData[item.country] = item.cities;
+                        });
+                    }
+                } catch(e) {
+                    console.log('Failed to fetch countries from primary API, using fallback.');
+                    // Fallback basic MENA list
+                    globalCountriesData = {
+                        "Algeria": ["Algiers", "Oran", "Constantine", "Annaba", "Blida", "Batna", "Setif", "Sidi Bel Abbes", "Biskra", "Tebessa", "Tiaret", "Ouargla", "Bejaia", "Tlemcen", "Skikda", "Bordj Bou Arreridj", "Bechar", "Mostaganem", "Ghardaia"],
+                        "Saudi Arabia": ["Mecca", "Medina", "Riyadh", "Jeddah", "Dammam", "Khobar", "Abha", "Taif", "Tabuk", "Buraydah", "Khamis Mushait", "Jizan", "Najran", "Hail", "Jubail", "Al Ahsa", "Yanbu", "Al Qatif"],
+                        "Egypt": ["Cairo", "Alexandria", "Giza", "Port Said", "Suez", "Luxor", "Mansoura", "El-Mahalla El-Kubra", "Tanta", "Asyut", "Ismailia", "Faiyum", "Zagazig", "Damietta", "Aswan", "Minya", "Damanhur", "Beni Suef"],
+                        "Morocco": ["Casablanca", "Rabat", "Fes", "Marrakesh", "Tangier", "Agadir", "Meknes", "Oujda", "Kenitra", "Tetouan", "Safi"],
+                        "Tunisia": ["Tunis", "Sfax", "Sousse", "Kairouan", "Bizerte", "Gabes", "Ariana", "Gafsa", "Monastir", "Ben Arous", "Kasserine"]
+                    };
+                }
+
+                // Populate Countries
+                const sortedCountries = Object.keys(globalCountriesData).sort();
+                countrySelect.innerHTML = '<option value="">-- اختر الدولة --</option>' + 
+                    sortedCountries.map(c => `<option value="${c}">${c}</option>`).join('');
+            }
+
+            // Load saved
+            const savedLoc = localStorage.getItem('diwan_manual_location');
+            if(savedLoc) {
+                const parsed = JSON.parse(savedLoc);
+                if(parsed.country && globalCountriesData[parsed.country]) {
+                    countrySelect.value = parsed.country;
+                    loadCitiesForCountry(parsed.city);
+                }
+            }
+        } else {
+            box.classList.add('hidden');
+            box.classList.remove('flex');
+        }
+    };
+
+    window.loadCitiesForCountry = function(preselectedCity = null) {
+        const country = document.getElementById('manual-country-input').value;
+        const citySelect = document.getElementById('manual-city-input');
+
+        if(!country || !globalCountriesData[country]) {
+            citySelect.innerHTML = '<option value="">-- اختر المدينة / الولاية --</option>';
+            citySelect.disabled = true;
+            return;
+        }
+
+        const cities = globalCountriesData[country].sort();
+        citySelect.innerHTML = '<option value="">-- اختر المدينة / الولاية --</option>' + 
+            cities.map(c => `<option value="${c}">${c}</option>`).join('');
+        citySelect.disabled = false;
+
+        if(preselectedCity && typeof preselectedCity === 'string') {
+            citySelect.value = preselectedCity;
+        }
+    };
+
+    window.saveManualLocation = function() {
+        const country = document.getElementById('manual-country-input').value;
+        const city = document.getElementById('manual-city-input').value;
+
+        if(!city || !country) {
+            alert('يرجى اختيار الدولة والمدينة أولاً');
+            return;
+        }
+
+        localStorage.setItem('diwan_manual_location', JSON.stringify({city, country}));
+
+        // Hide box
+        const box = document.getElementById('location-edit-box');
+        box.classList.add('hidden');
+        box.classList.remove('flex');
+
+        if(typeof fetchPrayerTimesWithManual === 'function') fetchPrayerTimesWithManual();
+    };
+
+    window.clearManualLocation = function() {
+        localStorage.removeItem('diwan_manual_location');
+        document.getElementById('manual-country-input').value = '';
+        document.getElementById('manual-city-input').value = '';
+        document.getElementById('manual-city-input').disabled = true;
+
+        const box = document.getElementById('location-edit-box');
+        box.classList.add('hidden');
+        box.classList.remove('flex');
+
+        if(typeof fetchPrayerTimesWithManual === 'function') fetchPrayerTimesWithManual();
+    };
+
+})();
+</script>
+
+
+<script id="khalwa-logic-patch">
+(function(){
+    window.toggleKhalwaFullscreen = function() {
+        const modal = document.getElementById('focus-modal');
+        const icon = document.getElementById('khalwa-fs-icon');
+        if (!document.fullscreenElement) {
+            if(modal.requestFullscreen) modal.requestFullscreen();
+            else if(modal.webkitRequestFullscreen) modal.webkitRequestFullscreen();
+            if(icon) { icon.classList.remove('fa-expand'); icon.classList.add('fa-compress'); }
+        } else {
+            if(document.exitFullscreen) document.exitFullscreen();
+            else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
+            if(icon) { icon.classList.remove('fa-compress'); icon.classList.add('fa-expand'); }
+        }
+    };
+
+    window.exitAndalusianKhalwa = function() {
+        if(typeof exitFocusMode === 'function') exitFocusMode();
+        if (document.fullscreenElement && document.exitFullscreen) {
+            document.exitFullscreen().catch(()=>{});
+        }
+        const icon = document.getElementById('khalwa-fs-icon');
+        if(icon) { icon.classList.remove('fa-compress'); icon.classList.add('fa-expand'); }
+        document.querySelectorAll('audio').forEach(a => { if(a.id !== 'global-audio-player') { a.pause(); a.currentTime=0; } });
+    };
+})();
 </script>
 
 </body>
